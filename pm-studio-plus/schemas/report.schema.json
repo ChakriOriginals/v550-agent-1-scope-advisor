@@ -1,0 +1,614 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/report.schema.json",
+  "title": "V550 AI Usage and Learning Report",
+  "description": "Strict one-page report model. The server-generated report issuance receipt is exposed through $defs.",
+  "$ref": "#/$defs/one_page_report_model",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "pseudonymous_student_key": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "sanitized_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 800,
+      "pattern": "^(?![=+@-])(?!.*[\\r\\n])(?!.*[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})(?!.*(?:\\+?1[-. ]?)?\\(?[0-9]{3}\\)?[-. ][0-9]{3}[-. ][0-9]{4})(?!.*(?:https?://|www\\.)).+$"
+    },
+    "misconception_flag": {
+      "type": "string",
+      "enum": [
+        "requirements_expectations_conflated",
+        "goal_objective_conflated",
+        "solution_chosen_before_requirements",
+        "activity_mislabeled_as_deliverable",
+        "success_criterion_not_measurable",
+        "missing_exclusion",
+        "assumption_presented_as_fact",
+        "ownerless_action",
+        "vague_wbs_work_package",
+        "wbs_overlap_or_gap",
+        "scope_creep_unacknowledged",
+        "stage2_scheduling_pulled_into_stage1"
+      ]
+    },
+    "report_issuance_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "report_id",
+        "session_id",
+        "attempt_number",
+        "issuance_type",
+        "generation_number",
+        "previous_issuance_report_id",
+        "issued_at",
+        "frozen_metrics_snapshot_hash",
+        "pdf_sha256",
+        "pdf_byte_length",
+        "verification_method",
+        "verification_value",
+        "watermark"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "report_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "issuance_type": {
+          "type": "string",
+          "enum": [
+            "original",
+            "regenerated"
+          ]
+        },
+        "generation_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "previous_issuance_report_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "frozen_metrics_snapshot_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "pdf_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "pdf_byte_length": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10485760
+        },
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "server_held_sha256",
+            "hmac_sha256",
+            "ed25519_signature"
+          ]
+        },
+        "verification_value": {
+          "type": "string",
+          "minLength": 43,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9_+/=-]+$"
+        },
+        "watermark": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 120
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "issuance_type": {
+                "const": "original"
+              }
+            },
+            "required": [
+              "issuance_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "generation_number": {
+                "const": 1
+              },
+              "previous_issuance_report_id": {
+                "type": "null"
+              },
+              "watermark": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "generation_number": {
+                "minimum": 2
+              },
+              "previous_issuance_report_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "watermark": {
+                "type": "string",
+                "pattern": "^REGENERATED COPY — GENERATION [2-9][0-9]* — PREVIOUS ISSUANCE EXISTS$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "critique_depth_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "interpretation"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "interpretation": {
+          "type": "string",
+          "enum": [
+            "No critique",
+            "Surface critique",
+            "Substantive critique",
+            "Deep critique"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": 0
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "interpretation": {
+                "const": "No critique"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": 1
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "interpretation": {
+                "const": "Surface critique"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": 2
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "interpretation": {
+                "const": "Substantive critique"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": 3
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "interpretation": {
+                "const": "Deep critique"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reliance_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_verbatim_count",
+        "challenged_or_modified_count",
+        "rejected_count",
+        "status",
+        "index"
+      ],
+      "properties": {
+        "accepted_verbatim_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "challenged_or_modified_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "calculated",
+            "not_applicable"
+          ]
+        },
+        "index": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "not_applicable"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "index": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "index": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "transparency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "note",
+        "logged_categories",
+        "not_logged_categories"
+      ],
+      "properties": {
+        "note": {
+          "$ref": "#/$defs/sanitized_text"
+        },
+        "logged_categories": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "pseudonymous_student_key",
+              "session_and_attempt_ids",
+              "structured_event_codes",
+              "artifact_and_version_ids",
+              "critique_depth",
+              "ai_disposition_counts",
+              "ai_reliance_index",
+              "substantive_iteration_count",
+              "gate_counts_and_outcome",
+              "misconception_flags",
+              "dimension_scores",
+              "sanitized_digest_and_report_metadata"
+            ]
+          }
+        },
+        "not_logged_categories": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "contains": {
+            "const": "raw_transcript"
+          },
+          "items": {
+            "type": "string",
+            "enum": [
+              "raw_transcript",
+              "full_drafts",
+              "evaluator_evidence_quotes",
+              "names_or_contact_details",
+              "sensitive_personal_information",
+              "unrelated_chat_history",
+              "hidden_model_reasoning",
+              "secrets_or_credentials",
+              "real_canvas_grade",
+              "class_rank"
+            ]
+          }
+        }
+      }
+    },
+    "privacy_assertions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_raw_transcript",
+        "contains_full_draft",
+        "contains_personal_information",
+        "contains_unrelated_history",
+        "contains_inferred_motive",
+        "contains_real_grade",
+        "contains_class_rank",
+        "contains_psychological_profile"
+      ],
+      "properties": {
+        "contains_raw_transcript": {
+          "const": false
+        },
+        "contains_full_draft": {
+          "const": false
+        },
+        "contains_personal_information": {
+          "const": false
+        },
+        "contains_unrelated_history": {
+          "const": false
+        },
+        "contains_inferred_motive": {
+          "const": false
+        },
+        "contains_real_grade": {
+          "const": false
+        },
+        "contains_class_rank": {
+          "const": false
+        },
+        "contains_psychological_profile": {
+          "const": false
+        }
+      }
+    },
+    "one_page_report_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_title",
+        "course",
+        "stage",
+        "student_key",
+        "sanitized_project_title",
+        "session_id",
+        "attempt_number",
+        "receipt",
+        "critique_depth",
+        "ai_reliance",
+        "substantive_iteration_count",
+        "gate_attempt_count",
+        "gate_outcome",
+        "misconception_flags",
+        "what_the_evidence_shows",
+        "where_ai_reliance_is_helping_or_hurting",
+        "next_step_behavior",
+        "transparency",
+        "verification_instructions",
+        "layout",
+        "privacy_assertions"
+      ],
+      "properties": {
+        "report_title": {
+          "const": "V550 AI Usage & Learning Report"
+        },
+        "course": {
+          "type": "string",
+          "enum": [
+            "V450",
+            "V550"
+          ]
+        },
+        "stage": {
+          "const": "stage_1_scope"
+        },
+        "student_key": {
+          "$ref": "#/$defs/pseudonymous_student_key"
+        },
+        "sanitized_project_title": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_text"
+            },
+            {
+              "maxLength": 120
+            }
+          ]
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "receipt": {
+          "$ref": "#/$defs/report_issuance_receipt"
+        },
+        "critique_depth": {
+          "$ref": "#/$defs/critique_depth_report"
+        },
+        "ai_reliance": {
+          "$ref": "#/$defs/reliance_report"
+        },
+        "substantive_iteration_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "gate_attempt_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "gate_outcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "REVISE",
+            "INCOMPLETE"
+          ]
+        },
+        "misconception_flags": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/misconception_flag"
+          }
+        },
+        "what_the_evidence_shows": {
+          "$ref": "#/$defs/sanitized_text"
+        },
+        "where_ai_reliance_is_helping_or_hurting": {
+          "$ref": "#/$defs/sanitized_text"
+        },
+        "next_step_behavior": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_text"
+            },
+            {
+              "maxLength": 300
+            }
+          ]
+        },
+        "transparency": {
+          "$ref": "#/$defs/transparency"
+        },
+        "verification_instructions": {
+          "$ref": "#/$defs/sanitized_text"
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "page_size",
+            "page_count",
+            "minimum_font_points",
+            "flattened",
+            "read_only_presentation"
+          ],
+          "properties": {
+            "page_size": {
+              "const": "US_LETTER"
+            },
+            "page_count": {
+              "const": 1
+            },
+            "minimum_font_points": {
+              "type": "number",
+              "minimum": 9,
+              "maximum": 14
+            },
+            "flattened": {
+              "const": true
+            },
+            "read_only_presentation": {
+              "const": true
+            }
+          }
+        },
+        "privacy_assertions": {
+          "$ref": "#/$defs/privacy_assertions"
+        }
+      }
+    }
+  }
+}

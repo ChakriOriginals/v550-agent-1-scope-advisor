@@ -1,0 +1,555 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/living-project-file.schema.json",
+  "title": "V550 Living Project File",
+  "description": "Private, versioned Stage 1 project record for one pseudonymous student. Empty history arrays represent sections not yet submitted; every stored revision must validate against its artifact contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "file_id",
+    "course_and_session_metadata",
+    "project_title_and_domain",
+    "big5_role_framing_versions",
+    "requirements_versions",
+    "expectations_moscow_versions",
+    "goals_versions",
+    "objectives_success_criteria_versions",
+    "project_statement_versions",
+    "scope_of_work_versions",
+    "in_scope_versions",
+    "out_of_scope_versions",
+    "exclusions_versions",
+    "deliverables_and_approval_sequence_versions",
+    "scope_action_plan_versions",
+    "wbs_versions",
+    "assumption_log_versions",
+    "constraints_and_uncertainties_versions",
+    "critique_revision_justification_ledger",
+    "gate_history",
+    "latest_privacy_safe_stage_summary",
+    "history_policy",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "maxLength": 32
+    },
+    "file_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "course_and_session_metadata": {
+      "$ref": "#/$defs/course_and_session_metadata"
+    },
+    "project_title_and_domain": {
+      "$ref": "#/$defs/project_title_and_domain"
+    },
+    "big5_role_framing_versions": {
+      "$ref": "#/$defs/big5_history"
+    },
+    "requirements_versions": {
+      "$ref": "#/$defs/requirements_history"
+    },
+    "expectations_moscow_versions": {
+      "$ref": "#/$defs/expectations_history"
+    },
+    "goals_versions": {
+      "$ref": "#/$defs/goals_history"
+    },
+    "objectives_success_criteria_versions": {
+      "$ref": "#/$defs/objectives_history"
+    },
+    "project_statement_versions": {
+      "$ref": "#/$defs/project_statement_history"
+    },
+    "scope_of_work_versions": {
+      "$ref": "#/$defs/scope_of_work_history"
+    },
+    "in_scope_versions": {
+      "$ref": "#/$defs/in_scope_history"
+    },
+    "out_of_scope_versions": {
+      "$ref": "#/$defs/out_of_scope_history"
+    },
+    "exclusions_versions": {
+      "$ref": "#/$defs/exclusions_history"
+    },
+    "deliverables_and_approval_sequence_versions": {
+      "$ref": "#/$defs/deliverables_history"
+    },
+    "scope_action_plan_versions": {
+      "$ref": "#/$defs/action_plan_history"
+    },
+    "wbs_versions": {
+      "$ref": "#/$defs/wbs_history"
+    },
+    "assumption_log_versions": {
+      "$ref": "#/$defs/assumption_log_history"
+    },
+    "constraints_and_uncertainties_versions": {
+      "$ref": "#/$defs/constraints_history"
+    },
+    "critique_revision_justification_ledger": {
+      "$ref": "scope-artifacts.schema.json#/$defs/critique_revision_justification_ledger"
+    },
+    "gate_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "evaluator.schema.json#/$defs/gate_result"
+      }
+    },
+    "latest_privacy_safe_stage_summary": {
+      "oneOf": [
+        {
+          "$ref": "insights.schema.json#/$defs/session_daily_digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "history_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "versioning",
+        "silent_overwrite_allowed",
+        "lineage_required"
+      ],
+      "properties": {
+        "versioning": {
+          "const": "append_new_version"
+        },
+        "silent_overwrite_allowed": {
+          "const": false
+        },
+        "lineage_required": {
+          "const": true
+        }
+      }
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$defs": {
+    "living_project_file": {
+      "$ref": "#"
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "pseudonymous_student_key": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "sanitized_project_title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^(?![=+@-])(?!.*[\\r\\n])(?!.*[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})(?!.*(?:\\+?1[-. ]?)?\\(?[0-9]{3}\\)?[-. ][0-9]{3}[-. ][0-9]{4}).+$"
+    },
+    "session_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "attempt_number",
+        "server_started_at",
+        "server_closed_at",
+        "consent_recorded",
+        "consent_version",
+        "identity_fields_locked"
+      ],
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "server_started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "server_closed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "consent_recorded": {
+          "const": true
+        },
+        "consent_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "identity_fields_locked": {
+          "const": true
+        }
+      }
+    },
+    "course_and_session_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "course",
+        "term",
+        "stage",
+        "student_key",
+        "current_session_id",
+        "sessions",
+        "created_at"
+      ],
+      "properties": {
+        "course": {
+          "type": "string",
+          "enum": [
+            "V450",
+            "V550"
+          ]
+        },
+        "term": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 32,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9 _-]+$"
+        },
+        "stage": {
+          "const": "stage_1_scope"
+        },
+        "student_key": {
+          "$ref": "#/$defs/pseudonymous_student_key"
+        },
+        "current_session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "sessions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 999,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/session_record"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "project_title_and_domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sanitized_project_title",
+        "domain",
+        "project_idea",
+        "rough_goal_or_problem",
+        "known_high_level_constraints",
+        "expected_timeframe",
+        "student_confirmed_extracted_context"
+      ],
+      "properties": {
+        "sanitized_project_title": {
+          "$ref": "#/$defs/sanitized_project_title"
+        },
+        "domain": {
+          "type": "string",
+          "enum": [
+            "government",
+            "not_for_profit_or_community_development",
+            "environmental",
+            "other_instructor_approved"
+          ]
+        },
+        "project_idea": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "rough_goal_or_problem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "known_high_level_constraints": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "expected_timeframe": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "student_confirmed_extracted_context": {
+          "type": "boolean"
+        }
+      }
+    },
+    "big5_role_framing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "planning_history_or_context",
+        "student_role",
+        "authority_categories",
+        "authority_explanation",
+        "patron_type",
+        "patron_role_description",
+        "plan_type",
+        "plan_type_description"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "scope-artifacts.schema.json#/$defs/artifact_metadata"
+        },
+        "planning_history_or_context": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "student_role": {
+          "type": "string",
+          "enum": [
+            "project_manager",
+            "in_house_staff",
+            "consultant",
+            "contractor",
+            "agency_staff",
+            "support",
+            "other_defined"
+          ]
+        },
+        "authority_categories": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "process",
+              "recommendations",
+              "timing",
+              "budget_assumptions",
+              "approvals",
+              "none"
+            ]
+          }
+        },
+        "authority_explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "patron_type": {
+          "type": "string",
+          "enum": [
+            "sponsor",
+            "supervisor",
+            "instructor",
+            "advisor",
+            "other_course_approved"
+          ]
+        },
+        "patron_role_description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "plan_type": {
+          "type": "string",
+          "enum": [
+            "quick_narrowly_scoped",
+            "comprehensive_long_range",
+            "strategic",
+            "other_defined"
+          ]
+        },
+        "plan_type_description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      }
+    },
+    "big5_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/big5_role_framing"
+      }
+    },
+    "requirements_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/requirements"
+      }
+    },
+    "expectations_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/expectations_moscow"
+      }
+    },
+    "goals_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/goals"
+      }
+    },
+    "objectives_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/objectives_success_criteria"
+      }
+    },
+    "project_statement_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/project_statement"
+      }
+    },
+    "scope_of_work_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/scope_of_work"
+      }
+    },
+    "in_scope_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "allOf": [
+          {
+            "$ref": "scope-artifacts.schema.json#/$defs/boundary_list"
+          },
+          {
+            "properties": {
+              "boundary_kind": {
+                "const": "in_scope"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "out_of_scope_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "allOf": [
+          {
+            "$ref": "scope-artifacts.schema.json#/$defs/boundary_list"
+          },
+          {
+            "properties": {
+              "boundary_kind": {
+                "const": "out_of_scope"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "exclusions_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "allOf": [
+          {
+            "$ref": "scope-artifacts.schema.json#/$defs/boundary_list"
+          },
+          {
+            "properties": {
+              "boundary_kind": {
+                "const": "exclusion"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "deliverables_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/deliverables"
+      }
+    },
+    "action_plan_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/scope_action_plan"
+      }
+    },
+    "wbs_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/wbs"
+      }
+    },
+    "assumption_log_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/assumption_log"
+      }
+    },
+    "constraints_history": {
+      "type": "array",
+      "maxItems": 999,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "scope-artifacts.schema.json#/$defs/constraints_uncertainties"
+      }
+    }
+  }
+}

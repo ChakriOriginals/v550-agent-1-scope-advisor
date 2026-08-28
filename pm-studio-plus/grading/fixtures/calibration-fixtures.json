@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "calibrationStatus": "PENDING_INSTRUCTOR_SCORING",
+  "targetTolerance": 1,
+  "fixtures": [
+    {
+      "fixtureId": "CAL-BASELINE-01",
+      "description": "Synthetic defensible baseline with all artifacts present.",
+      "expectedBand": "3",
+      "professorScores": null
+    },
+    {
+      "fixtureId": "CAL-INCOMPLETE-01",
+      "description": "Synthetic package missing exclusions and showing weak Action Plan assignability.",
+      "expectedBand": "1-2 on affected dimensions",
+      "professorScores": null
+    },
+    {
+      "fixtureId": "CAL-STRONG-THIN-HISTORY-01",
+      "description": "Synthetic strong artifact with no critique/revision lineage.",
+      "expectedBand": "artifact 4-5; thin-history signal is advisory and non-blocking",
+      "professorScores": null
+    }
+  ]
+}

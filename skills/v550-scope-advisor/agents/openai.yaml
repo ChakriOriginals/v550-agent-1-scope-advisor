@@ -1,0 +1,4 @@
+interface:
+  display_name: "v550 Scope Advisor"
+  short_description: "Build and run the frozen six-gate v550 Scope Advisor."
+  default_prompt: "Use $v550-scope-advisor as a patient learning partner: coach the student through the six-gate sequence, evaluate only when the student says they are ready, enforce the frozen hard checks, preserve completed work, give one manageable next step, and never supply the student’s graded judgment or assignment-ready answer."

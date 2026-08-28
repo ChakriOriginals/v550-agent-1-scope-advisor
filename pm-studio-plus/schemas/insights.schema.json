@@ -1,0 +1,413 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/insights.schema.json",
+  "title": "V550 Insights Metrics",
+  "description": "Strict, transcript-free behavioral metrics for the Insights protocol. Session and daily digests are available through $defs.",
+  "$ref": "#/$defs/insights_metrics",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "pseudonymous_student_key": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "sanitized_line": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^(?![=+@-])(?!.*[\\r\\n])(?!.*[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})(?!.*(?:\\+?1[-. ]?)?\\(?[0-9]{3}\\)?[-. ][0-9]{3}[-. ][0-9]{4})(?!.*(?:https?://|www\\.)).+$"
+    },
+    "misconception_flag": {
+      "type": "string",
+      "enum": [
+        "requirements_expectations_conflated",
+        "goal_objective_conflated",
+        "solution_chosen_before_requirements",
+        "activity_mislabeled_as_deliverable",
+        "success_criterion_not_measurable",
+        "missing_exclusion",
+        "assumption_presented_as_fact",
+        "ownerless_action",
+        "vague_wbs_work_package",
+        "wbs_overlap_or_gap",
+        "scope_creep_unacknowledged",
+        "stage2_scheduling_pulled_into_stage1"
+      ]
+    },
+    "critique_reason_code": {
+      "type": "string",
+      "enum": [
+        "no_usable_critique",
+        "accepted_without_evaluation",
+        "surface_wording_or_format_only",
+        "unsupported_looks_good_or_bad",
+        "meaningful_issue_revised_with_reason",
+        "course_concept_applied",
+        "assumption_or_boundary_tested",
+        "alternatives_and_tradeoffs_compared",
+        "evidence_used",
+        "mixed_session_pattern"
+      ]
+    },
+    "insight_reason_code": {
+      "type": "string",
+      "enum": [
+        "verbatim_acceptance_observed",
+        "meaningful_modification_observed",
+        "challenge_observed",
+        "rejection_observed",
+        "substantive_iteration_observed",
+        "trivial_edit_not_counted",
+        "thin_learning_history",
+        "evidence_sufficient",
+        "evidence_insufficient",
+        "no_ai_disposition_history"
+      ]
+    },
+    "insights_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "metrics_id",
+        "student_key",
+        "session_id",
+        "attempt_number",
+        "critique_depth",
+        "critique_depth_reason_code",
+        "accepted_verbatim_count",
+        "challenged_or_modified_count",
+        "rejected_count",
+        "ai_reliance_status",
+        "ai_reliance_index",
+        "substantive_iteration_count",
+        "gate_attempt_count",
+        "misconception_flags",
+        "report_issuance_count",
+        "report_regeneration_count",
+        "reason_codes",
+        "computed_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "metrics_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "student_key": {
+          "$ref": "#/$defs/pseudonymous_student_key"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "critique_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "critique_depth_reason_code": {
+          "$ref": "#/$defs/critique_reason_code"
+        },
+        "accepted_verbatim_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "challenged_or_modified_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "ai_reliance_status": {
+          "type": "string",
+          "enum": [
+            "calculated",
+            "not_applicable"
+          ]
+        },
+        "ai_reliance_index": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "substantive_iteration_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "gate_attempt_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "misconception_flags": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/misconception_flag"
+          }
+        },
+        "report_issuance_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "report_regeneration_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 998
+        },
+        "reason_codes": {
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/insight_reason_code"
+          }
+        },
+        "computed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ai_reliance_status": {
+                "const": "not_applicable"
+              }
+            },
+            "required": [
+              "ai_reliance_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ai_reliance_index": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ai_reliance_index": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "session_daily_digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "digest_id",
+        "digest_type",
+        "student_key",
+        "session_id",
+        "course_date",
+        "stage",
+        "stable_daily_key",
+        "line_count",
+        "working_on",
+        "ai_use",
+        "decided_or_revised",
+        "stuck_or_next",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "digest_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "digest_type": {
+          "type": "string",
+          "enum": [
+            "session_close",
+            "daily_rollup",
+            "private_catch_up"
+          ]
+        },
+        "student_key": {
+          "$ref": "#/$defs/pseudonymous_student_key"
+        },
+        "session_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "course_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "stage": {
+          "const": "stage_1_scope"
+        },
+        "stable_daily_key": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 200,
+              "pattern": "^[A-Za-z0-9_.:-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "line_count": {
+          "type": "integer",
+          "enum": [
+            3,
+            4
+          ]
+        },
+        "working_on": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^Working on: .+"
+            }
+          ]
+        },
+        "ai_use": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^AI use: .+"
+            }
+          ]
+        },
+        "decided_or_revised": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^Decided/revised: .+"
+            }
+          ]
+        },
+        "stuck_or_next": {
+          "oneOf": [
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/sanitized_line"
+                },
+                {
+                  "pattern": "^Stuck/next: .+"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "line_count": {
+                "const": 4
+              }
+            },
+            "required": [
+              "line_count"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stuck_or_next": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "stuck_or_next": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "digest_type": {
+                "const": "daily_rollup"
+              }
+            },
+            "required": [
+              "digest_type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "stable_daily_key": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "stable_daily_key": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

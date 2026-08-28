@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Approach A+  Instrumented Studio inside ChatGPT Edu</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --line:#cbd5e1;
+    --people:#fef3c7; --people-b:#f59e0b;
+    --app:#dbeafe; --app-b:#3b82f6;
+    --ai:#ede9fe; --ai-b:#8b5cf6;
+    --tool:#dcfce7; --tool-b:#22c55e;
+    --data:#fee2e2; --data-b:#ef4444;
+    --report:#fae8ff; --report-b:#c026d3;
+    --sheet:#ccfbf1; --sheet-b:#0d9488;
+    --runtime:#0f766e; --gruntime:#15803d;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); margin:0; padding:32px 20px 56px; background:#f8fafc; line-height:1.4;}
+  .wrap{max-width:1000px; margin:0 auto}
+  h1{font-size:26px; margin:0 0 4px}
+  .sub{color:var(--muted); margin:0 0 4px; font-size:15px}
+  .howto{color:var(--muted); font-size:13px; margin:0 0 24px; font-style:italic}
+  .layer{border-radius:14px; padding:16px 18px 18px; margin:0 auto 8px; position:relative}
+  .layer-title{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+  .row{display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+  .box{background:#fff; border:2px solid var(--line); border-radius:10px; padding:12px 14px; flex:1 1 0; min-width:150px; box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .box.wide{min-width:320px}
+  .box .name{font-weight:700; font-size:15px; margin:0 0 4px}
+  .box .desc{font-size:12.5px; color:#374151; margin:0}
+  .box .tech{font-size:11.5px; color:var(--muted); margin:6px 0 0; font-family:ui-monospace,Menlo,Consolas,monospace}
+  .subs{display:flex; flex-wrap:wrap; gap:4px; margin-top:8px}
+  .chip{font-size:10.5px; font-weight:600; color:#4c1d95; background:var(--ai); border:1px solid var(--ai-b); border-radius:999px; padding:2px 8px}
+  .chip.core{background:#fff7ed; border-color:var(--people-b); color:#7c2d12}
+  .layer.people{background:var(--people); border:1px solid var(--people-b)}
+  .layer.app{background:var(--app); border:1px solid var(--app-b)}
+  .layer.tool{background:var(--tool); border:1px solid var(--tool-b)}
+  .layer.report{background:var(--report); border:1px solid var(--report-b)}
+  .layer.data{background:var(--data); border:1px solid var(--data-b)}
+  .layer.sheet{background:var(--sheet); border:1px solid var(--sheet-b)}
+  .people .box{border-color:var(--people-b)}
+  .app .box{border-color:var(--app-b)}
+  .tool .box{border-color:var(--tool-b)}
+  .report .box{border-color:var(--report-b)}
+  .data .box{border-color:var(--data-b)}
+  .sheet .box{border-color:var(--sheet-b)}
+  .arrow{text-align:center; color:var(--muted); font-size:22px; line-height:1; margin:2px 0}
+  .arrow small{display:block; font-size:11.5px; font-style:italic; margin-top:1px}
+  .pill{display:inline-block; background:#fff; border:2px solid var(--app-b); border-radius:999px; padding:8px 16px; font-weight:700; font-size:14px; margin:0 auto 12px; text-align:center}
+  .center{display:flex; justify-content:center}
+  .projectfile{background:#fff; border:2px dashed var(--app-b); border-radius:10px; padding:12px 14px; margin-top:12px; text-align:center}
+  .projectfile .name{font-weight:700; font-size:14px}
+  .projectfile .desc{font-size:12.5px; color:#374151; margin:4px 0 0}
+  .runtime{border:3px solid var(--runtime); border-radius:18px; padding:30px 14px 16px; margin:0 auto 8px; position:relative; background:rgba(15,118,110,.04)}
+  .runtime-tag{position:absolute; top:-14px; left:18px; background:var(--runtime); color:#fff; font-weight:700; font-size:12.5px; letter-spacing:.03em; padding:5px 12px; border-radius:999px}
+  .gruntime{border:3px solid var(--gruntime); border-radius:18px; padding:30px 14px 16px; margin:0 auto 8px; position:relative; background:rgba(21,128,61,.04)}
+  .gruntime-tag{position:absolute; top:-14px; left:18px; background:var(--gruntime); color:#fff; font-weight:700; font-size:12.5px; letter-spacing:.03em; padding:5px 12px; border-radius:999px}
+  .legend{margin-top:28px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px 20px}
+  .legend h2{font-size:15px; margin:0 0 10px}
+  .legend dl{display:grid; grid-template-columns:auto 1fr; gap:6px 14px; margin:0; font-size:13px}
+  .legend dt{font-weight:700; font-family:ui-monospace,Menlo,Consolas,monospace; color:var(--ai-b)}
+  .legend dd{margin:0; color:#374151}
+  .note{background:#ecfeff; border:1px solid #06b6d4; border-radius:10px; padding:12px 16px; font-size:13px; color:#0e7490; margin-top:10px}
+  .note b{color:#155e75}
+  .foot{margin-top:22px; color:var(--muted); font-size:12px; text-align:center}
+  @media print{ body{background:#fff; padding:0} .layer,.runtime,.gruntime{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1><center>Approach A+</center></h1>
+  <h4><center>The Instrumented Studio inside ChatGPT Edu</center></h4>
+  <p class="sub">Everything from Approach A, <b>plus a crew of sub-agents inside every advisor</b> and a <b>live insights spreadsheet</b>: auto-grading, session summaries, and per-student usage analytics  still nothing you host, still ~$0 per student.</p>
+  <p class="howto">Teal box = lives inside ChatGPT Edu. Green box = lives in IU Google Workspace (serverless). The small pills inside each advisor are its sub-agents; orange pills are the common crew embedded in all four advisors.</p>
+
+  <!-- PEOPLE -->
+  <div class="layer people">
+    <p class="layer-title">1 · The people who use it</p>
+    <div class="row">
+      <div class="box"><p class="name">🎓 Student</p><p class="desc">Opens the shared workspace, checks in with their roster ID, and runs a real project through four stages. Drafts first; the AI challenges; every milestone is logged.</p></div>
+      <div class="box"><p class="name">🧑‍🏫 Instructor (you)</p><p class="desc">Builds the workspace once  then <b>watches a live dashboard</b> instead of grading cold. Moderates AI-suggested grades; drills into any student's tab.</p></div>
+    </div>
+  </div>
+
+  <div class="arrow">▼<small>student checks in (name / roster ID)  every session starts identified</small></div>
+
+  <!-- RUNTIME WRAPPER -->
+  <div class="runtime">
+    <span class="runtime-tag">☁️ Runs entirely inside ChatGPT Edu</span>
+
+    <!-- THE STUDIO -->
+    <div class="layer app" style="margin-bottom:8px">
+      <p class="layer-title">2 · The studio  four advisors, each with an embedded sub-agent crew</p>
+      <div class="center"><span class="pill">PM Studio = one ChatGPT Project + one orchestrating GPT + sub-agent crews</span></div>
+      <div class="row">
+        <div class="box wide">
+          <p class="name">Scope Advisor</p><p class="desc">Charter, work breakdown, scope in/out.</p>
+          <div class="subs">
+            <span class="chip core">📈 Insights Agent</span><span class="chip core">✅ Auto-Grader</span><span class="chip core">📝 Summarizer</span>
+            <span class="chip">🧱 WBS Decomposer</span><span class="chip">🔍 Assumption Auditor</span>
+          </div>
+        </div>
+        <div class="box wide">
+          <p class="name">Resource &amp; Cost Advisor</p><p class="desc">Labor hours, costs, resource conflicts.</p>
+          <div class="subs">
+            <span class="chip core">📈 Insights Agent</span><span class="chip core">✅ Auto-Grader</span><span class="chip core">📝 Summarizer</span>
+            <span class="chip">🧮 Cost Engine (deterministic)</span><span class="chip">💵 Wage-Data Agent</span><span class="chip">⚠️ Conflict Checker</span>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="box wide">
+          <p class="name">Risk Advisor</p><p class="desc">Finds risks; quantifies them with simulation.</p>
+          <div class="subs">
+            <span class="chip core">📈 Insights Agent</span><span class="chip core">✅ Auto-Grader</span><span class="chip core">📝 Summarizer</span>
+            <span class="chip">🎲 Monte Carlo Sim Agent</span><span class="chip">📋 Risk-Register Keeper</span>
+          </div>
+        </div>
+        <div class="box wide">
+          <p class="name">Stakeholder Advisor</p><p class="desc">Role-plays officials, community, funders.</p>
+          <div class="subs">
+            <span class="chip core">📈 Insights Agent</span><span class="chip core">✅ Auto-Grader</span><span class="chip core">📝 Summarizer</span>
+            <span class="chip">🎭 Persona Player</span><span class="chip">🤝 Negotiation Debrief Coach</span>
+          </div>
+        </div>
+      </div>
+      <div class="center" style="margin-top:12px">
+        <div class="box" style="max-width:620px; text-align:center">
+          <p class="name">⚖️ Review Board</p>
+          <p class="desc">Stage-gate before each advance. Pulls the Auto-Grader's rubric scores, pushes back Socratically, and won't pass thin work.</p>
+          <p class="tech">stage-gate · grades logged to the spreadsheet at every gate</p>
+        </div>
+      </div>
+      <div class="projectfile">
+        <p class="name">📄 Living Project File  ChatGPT Canvas ("Studio Doc")</p>
+        <p class="desc">One side-by-side document every advisor reads and updates, so each mode knows what the last one decided. Continuity without copy-paste.</p>
+        <p class="tech">ChatGPT Canvas document · NOT the Canvas LMS</p>
+      </div>
+    </div>
+
+    <div class="arrow">▼<small>the sub-agents use what's built into ChatGPT  plus one new bridge</small></div>
+
+    <!-- BUILT-IN TOOLS -->
+    <div class="layer tool" style="margin-bottom:0">
+      <p class="layer-title">3 · Tools the crews run on</p>
+      <div class="row">
+        <div class="box"><p class="name">🎲 Simulation &amp; math runtime</p><p class="desc">Runs the versioned <b>montecarlo.py</b> and cost roll-ups as real code  the LLM never does the math.</p><p class="tech">Code Interpreter · script shipped as a knowledge file</p></div>
+        <div class="box"><p class="name">📚 Reference files</p><p class="desc">Rubric, templates, persona briefs, cost snapshot, and the Monte Carlo script itself.</p><p class="tech">knowledge files (versioned in the build repo)</p></div>
+        <div class="box"><p class="name">🔌 Logging Action <span style="color:var(--muted)">(NEW)</span></p><p class="desc">After every milestone (draft, critique, sim run, gate, grade) the GPT posts a structured event to the spreadsheet.</p><p class="tech">GPT Action · OpenAPI schema · shared-token auth</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼<small>structured JSON events flow out on every milestone</small></div>
+
+  <!-- INSIGHTS SPREADSHEET -->
+  <div class="gruntime">
+    <span class="gruntime-tag">📊 Lives in IU Google Workspace  serverless</span>
+    <div class="layer sheet" style="margin-bottom:0">
+      <p class="layer-title">4 · The insights spreadsheet (one workbook for the whole class)</p>
+      <div class="row">
+        <div class="box"><p class="name">🔌 Event receiver</p><p class="desc">A tiny script that catches each event, stamps it, and files it  creating a new student tab automatically on first contact.</p><p class="tech">Google Apps Script web app (doPost) · no server</p></div>
+        <div class="box"><p class="name">📊 Master Dashboard tab <span style="color:var(--muted)">(the standard sheet)</span></p><p class="desc">One row per student: current stage, per-advisor grades, sessions, critique-depth, AI-reliance index, latest summary, flags.</p><p class="tech">rollup formulas over the event log</p></div>
+        <div class="box"><p class="name">🗂 One tab per student</p><p class="desc">Named with the student's name. Full chronology: what they drafted, how they pushed back, sim results, gate outcomes, grades, insight notes.</p><p class="tech">auto-created · timestamp | advisor | sub-agent | event | score | note</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼<small>at the end of each stage the studio produces…</small></div>
+
+  <!-- COMPETENCY REPORT -->
+  <div class="layer report">
+    <p class="layer-title">5 · What the student turns in</p>
+    <div class="center">
+      <div class="box" style="max-width:620px; border-color:var(--report-b)">
+        <p class="name">📝 Competency report (AI-generated, session-stamped)</p>
+        <p class="desc">Draft + justifications + AI critique + rubric score, now footer-stamped with a session ID so you can cross-check it against the student's tab. Tamper-evident, not tamper-proof.</p>
+        <p class="tech">session ID ties the PDF to the spreadsheet audit trail</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">▼<small>submitted to the gradebook</small></div>
+
+  <!-- LMS + INSTRUCTOR -->
+  <div class="layer data">
+    <p class="layer-title">6 · Submission &amp; grading (your existing tools)</p>
+    <div class="row">
+      <div class="box" style="border-color:var(--data-b)"><p class="name">🏫 Canvas LMS</p><p class="desc">Students submit the report as a normal assignment. Canvas stays the official gradebook.</p><p class="tech">Instructure GPT auto-grades are advisory, We decide the grade</p></div>
+      <div class="box" style="border-color:var(--data-b)"><p class="name">🧑‍🏫 Dashboard-assisted review</p><p class="desc">Open the Master Dashboard, sort by flags, moderate the AI-suggested grades, and spot-check reports against student tabs.</p><p class="tech">minutes per student instead of a cold read</p></div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <h2>Glossary</h2>
+    <dl>
+      <dt>Sub-agent</dt><dd>A specialist role the orchestrating GPT switches into for one job (grading, summarizing, simulating). One model, many hats  orchestrated by protocol, not parallel processes.</dd>
+      <dt>Insights Agent</dt><dd>The interactive data agent embedded in all four advisors. Silently logs usage patterns; students and instructors can also ask it directly ("How am I using AI? Where am I over-relying?").</dd>
+      <dt>Auto-Grader</dt><dd>Sub-agent that scores work against your rubric at each stage gate and logs score + rationale. Advisory  the instructor moderates.</dd>
+      <dt>Summarizer</dt><dd>Sub-agent that writes a 3-line digest per session: what the student is working on, decided, and stuck on. Feeds the dashboard.</dd>
+      <dt>AI-reliance index</dt><dd>Ratio of AI content accepted verbatim vs. challenged/modified by the student. High reliance + low critique depth = a teaching moment.</dd>
+      <dt>Critique depth</dt><dd>0–3 rating of how substantively the student pushed back on AI drafts in a session.</dd>
+      <dt>GPT Action</dt><dd>A Custom GPT's ability to call an external API, defined by an OpenAPI schema. Here: the only bridge out of ChatGPT, used for logging.</dd>
+      <dt>Apps Script</dt><dd>Google's built-in scripting for Sheets. Deployed as a web app it becomes a free, serverless webhook  no hosting.</dd>
+      <dt>Session ID</dt><dd>A unique stamp on each report footer and each logged event, tying submissions to the audit trail.</dd>
+      <dt>Code Interpreter</dt><dd>ChatGPT's built-in Python runtime  runs the versioned Monte Carlo script and cost math deterministically.</dd>
+      <dt>Codex</dt><dd>OpenAI's coding agent (CLI/IDE/cloud), included with ChatGPT Edu sign-in. Builds and maintains everything in the repo: prompts, Apps Script, schemas, tests.</dd>
+      <dt>Codex Skill</dt><dd>A reusable SKILL.md instruction pack Codex loads on demand. Each build task below is captured as a skill so next term's rebuild is a re-run, not a rewrite.</dd>
+      <dt>ChatGPT Canvas</dt><dd>The AI-edited side-by-side document holding the Living Project File. (Not the Canvas LMS.)</dd>
+    </dl>
+  </div>
+
+  <p class="foot">Approach A+ · Instrumented Studio inside ChatGPT Edu · builds on Approach A · built and maintained with OpenAI Codex + Codex Skills</p>
+
+</div>
+</body>
+</html>

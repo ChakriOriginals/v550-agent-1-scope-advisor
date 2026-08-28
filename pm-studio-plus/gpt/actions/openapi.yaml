@@ -1,0 +1,447 @@
+openapi: 3.1.0
+info:
+  title: V550 Scope Advisor Write-Only Action
+  version: 2.0.0
+  description: >-
+    Four narrow Stage 1 write operations. There is no student-facing history,
+    workbook, report-list, verification, cross-student, or grade-changing read.
+servers:
+  - url: https://script.google.com/macros/s/REPLACE_WITH_DEPLOYMENT_ID/exec
+paths:
+  /startSession:
+    post:
+      operationId: startSession
+      summary: Start a visibly consented pseudonymous session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartSessionRequest"
+      responses:
+        "200":
+          description: Minimal server-created session acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StartSessionResponse"
+  /logEvent:
+    post:
+      operationId: logEvent
+      summary: Append one idempotent structured, transcript-free event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogEventRequest"
+      responses:
+        "200":
+          description: Minimal event acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcknowledgementResponse"
+  /closeSession:
+    post:
+      operationId: closeSession
+      summary: Close the current session with a sanitized digest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CloseSessionRequest"
+      responses:
+        "200":
+          description: Minimal close acknowledgement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcknowledgementResponse"
+  /issueReport:
+    post:
+      operationId: issueReport
+      summary: Authorize and issue or regenerate the current Stage 1 report
+      description: >-
+        The backend derives authorization and every issuance value, renders and
+        stores the authoritative bytes, and returns only the narrow receipt.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueReportRequest"
+      responses:
+        "200":
+          description: Narrow report receipt with an expiring object-bound capability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IssueReportResponse"
+components:
+  schemas:
+    ClassToken:
+      type: string
+      minLength: 16
+      maxLength: 512
+      writeOnly: true
+    StudentKey:
+      type: string
+      minLength: 12
+      maxLength: 64
+      pattern: "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    OpaqueId:
+      type: string
+      minLength: 8
+      maxLength: 128
+      pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    SchemaVersion:
+      type: string
+      minLength: 5
+      maxLength: 32
+      pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    CommonRequestProperties:
+      type: object
+      additionalProperties: false
+      properties:
+        classToken:
+          $ref: "#/components/schemas/ClassToken"
+        studentKey:
+          $ref: "#/components/schemas/StudentKey"
+        requestId:
+          $ref: "#/components/schemas/OpaqueId"
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+    ConsentAssertion:
+      type: object
+      additionalProperties: false
+      required:
+        - asserted
+        - version
+        - clientObservedAt
+      properties:
+        asserted:
+          type: boolean
+          const: true
+        version:
+          type: string
+          minLength: 3
+          maxLength: 32
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        clientObservedAt:
+          type: string
+          format: date-time
+          description: Untrusted ordering metadata; server time remains authoritative.
+    StartSessionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - operation
+        - classToken
+        - studentKey
+        - requestId
+        - schemaVersion
+        - consent
+      properties:
+        operation:
+          type: string
+          const: startSession
+        classToken:
+          $ref: "#/components/schemas/ClassToken"
+        studentKey:
+          $ref: "#/components/schemas/StudentKey"
+        requestId:
+          $ref: "#/components/schemas/OpaqueId"
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+        consent:
+          $ref: "#/components/schemas/ConsentAssertion"
+    Stage:
+      type: string
+      const: stage_1_scope
+    ProtocolRole:
+      type: string
+      enum:
+        - main_scope_advisor
+        - auto_grader
+        - insights
+        - summarizer
+        - wbs_decomposer_action_plan
+        - assumption_auditor
+        - scope_review_board
+    EventType:
+      type: string
+      enum:
+        - role_framing_submitted
+        - requirements_submitted
+        - expectations_submitted
+        - moscow_submitted
+        - goals_objectives_submitted
+        - smart_check_completed
+        - deliverables_submitted
+        - project_statement_submitted
+        - scope_boundaries_submitted
+        - scope_action_plan_submitted
+        - wbs_submitted
+        - assumption_audit_completed
+        - draft_submitted
+        - critique_given
+        - critique_answered
+        - revision_submitted
+        - justification_submitted
+        - scope_creep_flagged
+        - misconception_flagged
+        - gate_attempt
+        - gate_result
+        - daily_summary_written
+    Metrics:
+      type: object
+      additionalProperties: false
+      properties:
+        critiqueDepth:
+          type: integer
+          minimum: 0
+          maximum: 3
+        acceptedVerbatim:
+          type: integer
+          minimum: 0
+        challengedOrModified:
+          type: integer
+          minimum: 0
+        rejected:
+          type: integer
+          minimum: 0
+        aiRelianceStatus:
+          type: string
+          enum: [calculated, not_applicable]
+        aiRelianceIndex:
+          type: [number, "null"]
+          minimum: 0
+          maximum: 100
+        substantiveIterations:
+          type: integer
+          minimum: 0
+        gateAttempts:
+          type: integer
+          minimum: 0
+    Digest:
+      type: object
+      additionalProperties: false
+      required: [workingOn, aiUse, decidedOrRevised]
+      properties:
+        workingOn:
+          type: string
+          maxLength: 240
+          pattern: "^Working on: .+"
+        aiUse:
+          type: string
+          maxLength: 240
+          pattern: "^AI use: .+"
+        decidedOrRevised:
+          type: string
+          maxLength: 240
+          pattern: "^Decided/revised: .+"
+        stuckOrNext:
+          type: [string, "null"]
+          maxLength: 240
+          pattern: "^Stuck/next: .+"
+    LogEventRequest:
+      type: object
+      additionalProperties: false
+      required: [operation, classToken, studentKey, requestId, schemaVersion, sessionId, eventId, eventType, stage, role]
+      properties:
+        operation:
+          type: string
+          const: logEvent
+        classToken:
+          $ref: "#/components/schemas/ClassToken"
+        studentKey:
+          $ref: "#/components/schemas/StudentKey"
+        requestId:
+          $ref: "#/components/schemas/OpaqueId"
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+        sessionId:
+          $ref: "#/components/schemas/OpaqueId"
+        eventId:
+          $ref: "#/components/schemas/OpaqueId"
+        eventType:
+          $ref: "#/components/schemas/EventType"
+        stage:
+          $ref: "#/components/schemas/Stage"
+        role:
+          $ref: "#/components/schemas/ProtocolRole"
+        artifactVersionId:
+          $ref: "#/components/schemas/OpaqueId"
+        metrics:
+          $ref: "#/components/schemas/Metrics"
+        reasonCodes:
+          type: array
+          maxItems: 20
+          uniqueItems: true
+          description: >-
+            Controlled codes only. Gate lifecycle events carry exactly one gate
+            identity: GATE_N for revision_submitted, GATE_6 for
+            assumption_audit_completed, GATE_N_ATTEMPT_RECORDED for gate_attempt,
+            or GATE_N_OPEN/GATE_N_CLOSED for gate_result matching PASS/REVISE.
+          items:
+            type: string
+            maxLength: 80
+            pattern: "^[A-Za-z0-9_:-]+$"
+        oneLineNote:
+          type: [string, "null"]
+          maxLength: 240
+        misconceptionFlags:
+          type: array
+          maxItems: 12
+          uniqueItems: true
+          items:
+            type: string
+        digest:
+          $ref: "#/components/schemas/Digest"
+        gateOutcome:
+          type: string
+          enum: [PASS, REVISE, INCOMPLETE]
+        dimensionScores:
+          type: object
+          additionalProperties: false
+          required:
+            - projectStatement
+            - objectivesAndSuccessCriteria
+            - scopeOfWork
+            - deliverables
+            - scopeActionPlan
+            - constraintsAndUncertainties
+            - exclusions
+            - doYouDeliver
+          properties:
+            projectStatement: {type: integer, minimum: 1, maximum: 5}
+            objectivesAndSuccessCriteria: {type: integer, minimum: 1, maximum: 5}
+            scopeOfWork: {type: integer, minimum: 1, maximum: 5}
+            deliverables: {type: integer, minimum: 1, maximum: 5}
+            scopeActionPlan: {type: integer, minimum: 1, maximum: 5}
+            constraintsAndUncertainties: {type: integer, minimum: 1, maximum: 5}
+            exclusions: {type: integer, minimum: 1, maximum: 5}
+            doYouDeliver: {type: integer, minimum: 1, maximum: 5}
+    CloseSessionRequest:
+      type: object
+      additionalProperties: false
+      required: [operation, classToken, studentKey, requestId, schemaVersion, sessionId, stage, role, digest]
+      properties:
+        operation:
+          type: string
+          const: closeSession
+        classToken:
+          $ref: "#/components/schemas/ClassToken"
+        studentKey:
+          $ref: "#/components/schemas/StudentKey"
+        requestId:
+          $ref: "#/components/schemas/OpaqueId"
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+        sessionId:
+          $ref: "#/components/schemas/OpaqueId"
+        stage:
+          $ref: "#/components/schemas/Stage"
+        role:
+          $ref: "#/components/schemas/ProtocolRole"
+        metrics:
+          $ref: "#/components/schemas/Metrics"
+        reasonCodes:
+          type: array
+          maxItems: 20
+          uniqueItems: true
+          items:
+            type: string
+            maxLength: 80
+        oneLineNote:
+          type: [string, "null"]
+          maxLength: 240
+        misconceptionFlags:
+          type: array
+          maxItems: 12
+          uniqueItems: true
+          items:
+            type: string
+        digest:
+          $ref: "#/components/schemas/Digest"
+        gateOutcome:
+          type: string
+          enum: [PASS, REVISE, INCOMPLETE]
+    IssueReportRequest:
+      type: object
+      additionalProperties: false
+      required: [operation, classToken, studentKey, requestId, schemaVersion, sessionId]
+      properties:
+        operation:
+          type: string
+          const: issueReport
+        classToken:
+          $ref: "#/components/schemas/ClassToken"
+        studentKey:
+          $ref: "#/components/schemas/StudentKey"
+        requestId:
+          $ref: "#/components/schemas/OpaqueId"
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+        sessionId:
+          $ref: "#/components/schemas/OpaqueId"
+        regenerate:
+          type: boolean
+          default: false
+    ReceiptPayload:
+      type: object
+      additionalProperties: false
+      required: [reportId, generationNumber, issuedAtServer, verificationToken]
+      properties:
+        reportId:
+          $ref: "#/components/schemas/OpaqueId"
+        generationNumber:
+          type: integer
+          minimum: 1
+        issuedAtServer:
+          type: string
+          format: date-time
+        verificationToken:
+          type: string
+          minLength: 24
+          maxLength: 2048
+          description: Complete short-lived capability URL bound to one stored report object.
+    StartSessionResponse:
+      type: object
+      additionalProperties: false
+      required: [ok, operation, serverTimestamp, sessionId]
+      properties:
+        ok:
+          type: boolean
+          const: true
+        operation:
+          type: string
+          const: startSession
+        serverTimestamp:
+          type: string
+          format: date-time
+        sessionId:
+          $ref: "#/components/schemas/OpaqueId"
+    AcknowledgementResponse:
+      type: object
+      additionalProperties: false
+      required: [ok, operation, serverTimestamp, acknowledged]
+      properties:
+        ok:
+          type: boolean
+          const: true
+        operation:
+          type: string
+          enum: [logEvent, closeSession]
+        serverTimestamp:
+          type: string
+          format: date-time
+        acknowledged:
+          type: boolean
+          const: true
+        duplicate:
+          type: boolean
+    IssueReportResponse:
+      $ref: "#/components/schemas/ReceiptPayload"

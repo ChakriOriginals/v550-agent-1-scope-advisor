@@ -1,0 +1,21 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local deployment values and credentials must never enter Git.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+local-secrets/
+script-properties*.json
+staff-test-results/private/
+
+# Generated scratch output.
+tmp/
+build/
+dist/

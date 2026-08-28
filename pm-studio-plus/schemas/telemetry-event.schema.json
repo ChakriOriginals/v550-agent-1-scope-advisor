@@ -1,0 +1,1490 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/telemetry-event.schema.json",
+  "title": "V550 Data-Minimized Telemetry Event",
+  "description": "Write-only, transcript-free event envelope. Unknown fields fail closed; payload shape is selected by event_type.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "row_type",
+    "event_id",
+    "server_timestamp",
+    "course",
+    "term",
+    "student_key",
+    "session_id",
+    "attempt_number",
+    "stage",
+    "advisor",
+    "protocol_role",
+    "event_type",
+    "reason_codes",
+    "one_line_note",
+    "payload"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "maxLength": 32
+    },
+    "row_type": {
+      "const": "event"
+    },
+    "event_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "server_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "course": {
+      "type": "string",
+      "enum": [
+        "V450",
+        "V550"
+      ]
+    },
+    "term": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 32,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9 _-]+$"
+    },
+    "student_key": {
+      "$ref": "#/$defs/pseudonymous_student_key"
+    },
+    "session_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "attempt_number": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 999
+    },
+    "stage": {
+      "const": "stage_1_scope"
+    },
+    "advisor": {
+      "const": "scope_advisor"
+    },
+    "protocol_role": {
+      "type": "string",
+      "enum": [
+        "main_scope_advisor",
+        "insights",
+        "auto_grader",
+        "summarizer",
+        "wbs_decomposer_action_plan",
+        "assumption_auditor",
+        "scope_review_board"
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "session_started",
+        "consent_recorded",
+        "role_framing_submitted",
+        "requirements_submitted",
+        "expectations_submitted",
+        "moscow_submitted",
+        "goals_objectives_submitted",
+        "smart_check_completed",
+        "deliverables_submitted",
+        "project_statement_submitted",
+        "scope_boundaries_submitted",
+        "scope_action_plan_submitted",
+        "wbs_submitted",
+        "assumption_audit_completed",
+        "draft_submitted",
+        "critique_given",
+        "critique_answered",
+        "revision_submitted",
+        "justification_submitted",
+        "scope_creep_flagged",
+        "misconception_flagged",
+        "gate_attempt",
+        "gate_result",
+        "report_issued",
+        "report_regenerated",
+        "session_closed",
+        "daily_summary_written"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "maxItems": 10,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/reason_code"
+      }
+    },
+    "one_line_note": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sanitized_line"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "payload": {}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "session_started"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/session_started_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "consent_recorded"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/consent_recorded_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "role_framing_submitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/role_framing_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": [
+              "requirements_submitted",
+              "expectations_submitted",
+              "moscow_submitted",
+              "goals_objectives_submitted",
+              "deliverables_submitted",
+              "project_statement_submitted",
+              "scope_boundaries_submitted",
+              "scope_action_plan_submitted",
+              "wbs_submitted"
+            ]
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/artifact_submission_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "smart_check_completed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/smart_check_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "assumption_audit_completed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/assumption_audit_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "draft_submitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/draft_submitted_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "critique_given"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/critique_given_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "critique_answered"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/critique_answered_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "revision_submitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/revision_submitted_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "justification_submitted"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/justification_submitted_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "scope_creep_flagged"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/scope_creep_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "misconception_flagged"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/misconception_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "gate_attempt"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/gate_attempt_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "gate_result"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/gate_result_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "report_issued"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/report_issued_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "report_regenerated"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/report_regenerated_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "session_closed"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/session_closed_payload"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "const": "daily_summary_written"
+          }
+        },
+        "required": [
+          "event_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/daily_summary_payload"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "telemetry_event": {
+      "$ref": "#"
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "pseudonymous_student_key": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "sanitized_line": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240,
+      "pattern": "^(?![=+@-])(?!.*[\\r\\n])(?!.*[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})(?!.*(?:\\+?1[-. ]?)?\\(?[0-9]{3}\\)?[-. ][0-9]{3}[-. ][0-9]{4})(?!.*(?:https?://|www\\.)).+$"
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "accepted_verbatim",
+        "modified_or_challenged",
+        "rejected",
+        "deferred",
+        "substantive_iteration",
+        "trivial_edit_not_counted",
+        "student_attempt_meaningful",
+        "student_attempt_insufficient",
+        "hard_validation_passed",
+        "hard_validation_failed",
+        "evidence_sufficient",
+        "evidence_insufficient",
+        "thin_learning_history",
+        "direct_answer_request_refused",
+        "stage2_work_deferred",
+        "verification_required",
+        "scope_creep_detected",
+        "duplicate_event_acknowledged",
+        "privacy_sanitized"
+      ]
+    },
+    "misconception_flag": {
+      "type": "string",
+      "enum": [
+        "requirements_expectations_conflated",
+        "goal_objective_conflated",
+        "solution_chosen_before_requirements",
+        "activity_mislabeled_as_deliverable",
+        "success_criterion_not_measurable",
+        "missing_exclusion",
+        "assumption_presented_as_fact",
+        "ownerless_action",
+        "vague_wbs_work_package",
+        "wbs_overlap_or_gap",
+        "scope_creep_unacknowledged",
+        "stage2_scheduling_pulled_into_stage1"
+      ]
+    },
+    "artifact_locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "artifact_version"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "artifact_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        }
+      }
+    },
+    "session_started_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consent_required",
+        "identity_fields_locked"
+      ],
+      "properties": {
+        "consent_required": {
+          "const": true
+        },
+        "identity_fields_locked": {
+          "const": true
+        }
+      }
+    },
+    "consent_recorded_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consent_recorded",
+        "consent_version",
+        "logging_scope_acknowledged"
+      ],
+      "properties": {
+        "consent_recorded": {
+          "const": true
+        },
+        "consent_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "logging_scope_acknowledged": {
+          "const": true
+        }
+      }
+    },
+    "role_framing_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "role_category",
+        "authority_categories",
+        "patron_type",
+        "plan_type"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "role_category": {
+          "type": "string",
+          "enum": [
+            "project_manager",
+            "in_house_staff",
+            "consultant",
+            "contractor",
+            "agency_staff",
+            "support",
+            "other_defined"
+          ]
+        },
+        "authority_categories": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "process",
+              "recommendations",
+              "timing",
+              "budget_assumptions",
+              "approvals",
+              "none"
+            ]
+          }
+        },
+        "patron_type": {
+          "type": "string",
+          "enum": [
+            "sponsor",
+            "supervisor",
+            "instructor",
+            "advisor",
+            "other_course_approved"
+          ]
+        },
+        "plan_type": {
+          "type": "string",
+          "enum": [
+            "quick_narrowly_scoped",
+            "comprehensive_long_range",
+            "strategic",
+            "other_defined"
+          ]
+        }
+      }
+    },
+    "artifact_submission_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "validation_status"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "validation_status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "revision_required"
+          ]
+        }
+      }
+    },
+    "smart_check_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "objectives_checked",
+        "objectives_passed",
+        "outcome"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "objectives_checked": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "objectives_passed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "revision_required"
+          ]
+        }
+      }
+    },
+    "assumption_audit_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "assumption_count",
+        "verification_item_count",
+        "scope_creep_item_count",
+        "reaudit_sequence"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "assumption_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "verification_item_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "scope_creep_item_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000
+        },
+        "reaudit_sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        }
+      }
+    },
+    "draft_submitted_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "draft_origin",
+        "attempt_quality",
+        "preliminary_label_applied"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "draft_origin": {
+          "type": "string",
+          "enum": [
+            "student_original",
+            "student_revision",
+            "ai_preliminary"
+          ]
+        },
+        "attempt_quality": {
+          "type": "string",
+          "enum": [
+            "token_or_insufficient",
+            "meaningful",
+            "complete"
+          ]
+        },
+        "preliminary_label_applied": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "draft_origin": {
+                "const": "ai_preliminary"
+              }
+            },
+            "required": [
+              "draft_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "preliminary_label_applied": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "preliminary_label_applied": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "critique_given_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "prompt_count",
+        "source_role"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "prompt_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "source_role": {
+          "type": "string",
+          "enum": [
+            "main_scope_advisor",
+            "insights",
+            "auto_grader",
+            "wbs_decomposer_action_plan",
+            "assumption_auditor",
+            "scope_review_board"
+          ]
+        }
+      }
+    },
+    "critique_answered_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "response_present",
+        "critique_depth",
+        "critique_reason_code"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "response_present": {
+          "type": "boolean"
+        },
+        "critique_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "critique_reason_code": {
+          "type": "string",
+          "enum": [
+            "no_usable_critique",
+            "accepted_without_evaluation",
+            "surface_wording_or_format_only",
+            "unsupported_looks_good_or_bad",
+            "meaningful_issue_revised_with_reason",
+            "course_concept_applied",
+            "assumption_or_boundary_tested",
+            "alternatives_and_tradeoffs_compared",
+            "evidence_used",
+            "mixed_session_pattern"
+          ]
+        }
+      }
+    },
+    "revision_submitted_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "substantive",
+        "ai_guidance_disposition"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "substantive": {
+          "type": "boolean"
+        },
+        "ai_guidance_disposition": {
+          "type": "string",
+          "enum": [
+            "accepted_verbatim",
+            "modified_or_challenged",
+            "rejected",
+            "deferred",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "justification_submitted_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "consequential_change",
+        "justification_present",
+        "ai_guidance_disposition"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "consequential_change": {
+          "type": "boolean"
+        },
+        "justification_present": {
+          "const": true
+        },
+        "ai_guidance_disposition": {
+          "type": "string",
+          "enum": [
+            "accepted_verbatim",
+            "modified_or_challenged",
+            "rejected",
+            "deferred",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "scope_creep_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "boundary_item_id",
+        "decision"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/artifact_locator"
+        },
+        "boundary_item_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "rejected",
+            "deferred",
+            "exchanged_for_scope_item",
+            "accepted_with_iron_triangle_consequence"
+          ]
+        }
+      }
+    },
+    "misconception_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flags"
+      ],
+      "properties": {
+        "flags": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/misconception_flag"
+          }
+        }
+      }
+    },
+    "metrics_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "critique_depth",
+        "accepted_verbatim_count",
+        "challenged_or_modified_count",
+        "rejected_count",
+        "ai_reliance_status",
+        "ai_reliance_index",
+        "substantive_iteration_count",
+        "gate_attempt_count",
+        "misconception_flags"
+      ],
+      "properties": {
+        "critique_depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "accepted_verbatim_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "challenged_or_modified_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "ai_reliance_status": {
+          "type": "string",
+          "enum": [
+            "calculated",
+            "not_applicable"
+          ]
+        },
+        "ai_reliance_index": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "substantive_iteration_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "gate_attempt_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999
+        },
+        "misconception_flags": {
+          "type": "array",
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/misconception_flag"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ai_reliance_status": {
+                "const": "not_applicable"
+              }
+            },
+            "required": [
+              "ai_reliance_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ai_reliance_index": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ai_reliance_index": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "gate_attempt_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_attempt_number",
+        "metrics"
+      ],
+      "properties": {
+        "gate_attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "metrics": {
+          "$ref": "#/$defs/metrics_snapshot"
+        }
+      }
+    },
+    "dimension_scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_statement",
+        "objectives_and_success_criteria",
+        "scope_of_work",
+        "deliverables",
+        "scope_action_plan",
+        "constraints_and_uncertainties",
+        "exclusions",
+        "do_you_deliver"
+      ],
+      "properties": {
+        "project_statement": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "objectives_and_success_criteria": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "scope_of_work": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "deliverables": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "scope_action_plan": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "constraints_and_uncertainties": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "exclusions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "do_you_deliver": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
+    },
+    "gate_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_artifacts_exist",
+        "hard_validations_pass",
+        "minimum_average_met",
+        "no_dimension_score_of_one",
+        "critique_prompts_answered",
+        "consequential_suggestions_dispositioned",
+        "consequential_changes_justified",
+        "learning_checks_complete",
+        "evaluator_evidence_sufficient"
+      ],
+      "properties": {
+        "required_artifacts_exist": {
+          "type": "boolean"
+        },
+        "hard_validations_pass": {
+          "type": "boolean"
+        },
+        "minimum_average_met": {
+          "type": "boolean"
+        },
+        "no_dimension_score_of_one": {
+          "type": "boolean"
+        },
+        "critique_prompts_answered": {
+          "type": "boolean"
+        },
+        "consequential_suggestions_dispositioned": {
+          "type": "boolean"
+        },
+        "consequential_changes_justified": {
+          "type": "boolean"
+        },
+        "learning_checks_complete": {
+          "type": "boolean"
+        },
+        "evaluator_evidence_sufficient": {
+          "type": "boolean"
+        }
+      }
+    },
+    "gate_result_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_attempt_number",
+        "outcome",
+        "dimension_scores",
+        "average_score",
+        "checks",
+        "metrics",
+        "frozen_metrics_snapshot_hash"
+      ],
+      "properties": {
+        "gate_attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "REVISE",
+            "INCOMPLETE"
+          ]
+        },
+        "dimension_scores": {
+          "$ref": "#/$defs/dimension_scores"
+        },
+        "average_score": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "checks": {
+          "$ref": "#/$defs/gate_checks"
+        },
+        "metrics": {
+          "$ref": "#/$defs/metrics_snapshot"
+        },
+        "frozen_metrics_snapshot_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        }
+      }
+    },
+    "report_issued_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_id",
+        "generation_number",
+        "pdf_sha256",
+        "verification_method"
+      ],
+      "properties": {
+        "report_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "generation_number": {
+          "const": 1
+        },
+        "pdf_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "server_held_sha256",
+            "hmac_sha256",
+            "ed25519_signature"
+          ]
+        }
+      }
+    },
+    "report_regenerated_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_id",
+        "previous_issuance_report_id",
+        "generation_number",
+        "pdf_sha256",
+        "verification_method",
+        "watermark_visible"
+      ],
+      "properties": {
+        "report_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "previous_issuance_report_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "generation_number": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 999
+        },
+        "pdf_sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "verification_method": {
+          "type": "string",
+          "enum": [
+            "server_held_sha256",
+            "hmac_sha256",
+            "ed25519_signature"
+          ]
+        },
+        "watermark_visible": {
+          "const": true
+        }
+      }
+    },
+    "digest_lines": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "line_count",
+        "digest_line_1",
+        "digest_line_2",
+        "digest_line_3",
+        "digest_line_4"
+      ],
+      "properties": {
+        "line_count": {
+          "type": "integer",
+          "enum": [
+            3,
+            4
+          ]
+        },
+        "digest_line_1": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^Working on: .+"
+            }
+          ]
+        },
+        "digest_line_2": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^AI use: .+"
+            }
+          ]
+        },
+        "digest_line_3": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/sanitized_line"
+            },
+            {
+              "pattern": "^Decided/revised: .+"
+            }
+          ]
+        },
+        "digest_line_4": {
+          "oneOf": [
+            {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/sanitized_line"
+                },
+                {
+                  "pattern": "^Stuck/next: .+"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "line_count": {
+                "const": 4
+              }
+            },
+            "required": [
+              "line_count"
+            ]
+          },
+          "then": {
+            "properties": {
+              "digest_line_4": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "digest_line_4": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "session_closed_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest",
+        "metrics"
+      ],
+      "properties": {
+        "digest": {
+          "$ref": "#/$defs/digest_lines"
+        },
+        "metrics": {
+          "$ref": "#/$defs/metrics_snapshot"
+        }
+      }
+    },
+    "daily_summary_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stable_daily_key",
+        "course_date",
+        "digest",
+        "metrics"
+      ],
+      "properties": {
+        "stable_daily_key": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 200,
+          "pattern": "^[A-Za-z0-9_.:-]+$"
+        },
+        "course_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest_lines"
+        },
+        "metrics": {
+          "$ref": "#/$defs/metrics_snapshot"
+        }
+      }
+    }
+  }
+}

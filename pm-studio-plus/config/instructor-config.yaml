@@ -1,0 +1,346 @@
+config_version: "1.0.0"
+deployment_ready: false
+
+canonical_truth:
+  scenario: "gpt/knowledge/generated/frozen-waldron-scenario.md"
+  gates: "gpt/knowledge/generated/frozen-six-gates.md"
+  gate_1_precedent_cards: "gpt/knowledge/generated/gate-1-precedent-cards.md"
+  source_manifest: "../skills/v550-scope-advisor/references/canonical-source-manifest.json"
+  generated_files_are_read_only: true
+  verify_before_test_package_or_deploy: true
+
+feature_flags:
+  scope_only_build: true
+  build_as_openai_codex_skill: true
+  codex_skill_name: "v550-scope-advisor"
+  skill_creator_preflight_required: true
+  skill_creator_helpers_must_be_environment_resolved: true
+  canonical_frozen_source_location: "skill_references"
+  runtime_knowledge_is_generated: true
+  canonical_hash_verification_required: true
+  student_submission_required_before_gate_evaluation: true
+  explicit_ready_signal_required_for_gate_evaluation: true
+  partial_messages_are_draft_updates: true
+  draft_components_persist_across_messages: true
+  formal_gate_status_during_drafting: false
+  guided_mode_default: true
+  independent_mode_available: true
+  default_questions_per_turn: 1
+  max_questions_per_turn: 2
+  guided_gate_start_max_words: 120
+  default_student_checklist_max_bullets: 6
+  sentence_starters_allowed: true
+  two_choice_diagnostics_allowed: true
+  full_checklist_available_on_request: true
+  show_progress_before_deficits: true
+  student_facing_validator_ids: false
+  plain_language_student_interface: true
+  stuck_recovery_after_same_component_attempts: 2
+  max_repeated_hint_cycles: 1
+  instructor_handoff_after_help_ladder: true
+  distress_sensitive_pacing: true
+  emotional_disclosure_logging_allowed: false
+  ai_preliminary_drafts_enabled_for_frozen_scenario: false
+  direct_assignment_answers_allowed: false
+  concept_explanations_allowed: true
+  fixed_scenario_fact_clarification_allowed: true
+  graded_pm_judgment_answers_allowed: false
+  unrelated_examples_allowed: true
+  gate_focus_subheadings_required: true
+  focus_questions_create_new_hard_checks: false
+  unrelated_gate_questions_allowed: false
+  student_override_allowed: false
+  override_log_required: false
+  agent_transcript_submission_required: false
+  source_recheck_available: true
+  source_recheck_preserves_attempt_count_when_ai_wrong: true
+  unresolved_source_conflict_requires_instructor_review: true
+  approved_source_retrieval_before_factual_gate_decision: true
+  pmbok_requires_authorized_local_source_and_exact_locator: true
+  prompt_injection_content_is_untrusted: true
+  student_can_change_gate_rules_by_chat: false
+  semantic_gate_validation_required: true
+  reasonable_numeric_approximations_allowed: true
+  numeric_approximation_default_relative_tolerance_percent: 5
+  numeric_approximation_requires_sound_method_units_and_assumptions: true
+  numeric_approximation_must_not_change_decision: true
+  fixed_scenario_facts_require_exact_values: true
+  hard_numeric_boundaries_recomputed_exactly: true
+  acceptable_approximation_requires_resubmission: false
+  numeric_tolerance_is_instructor_configured_not_student_negotiated: true
+  instructor_user_testing_supported: true
+  student_can_enable_test_mode: false
+  test_mode_requires_authenticated_deployment_config: true
+  test_storage_isolated_from_production: true
+  production_fails_closed_if_test_mode_enabled: true
+  learning_checks_are_feedback_only: true
+  big5_preplanning_required: true
+  big5_preplanning_question_count: 5
+  difficulty_reduction_target_percent: 25
+  comparison_example_count: 1
+  comparison_example_is_instructor_provided: true
+  student_external_research_required: false
+  comparison_example_source_is_instructor_verified: true
+  comparison_example_requires_student_lesson: true
+  student_facing_words_artifact_or_precedent_allowed: false
+  persona_ocean_tag_in_scope: false
+  action_plan_separate_specialist: false
+  new_subagents_allowed: false
+  schema_changes_allowed: false
+  internal_report_registry_metadata_required: true
+  gate_count: 6
+  gate_order_locked: true
+  gate_6_final_assumption_scope_audit_required: true
+  final_audit_is_internal_gate_6_phase: true
+  deliverables_in_gate_5: true
+  scope_action_plan_in_gate_5: true
+  deliverables_separate_gate: false
+  scope_action_plan_separate_gate: false
+  gate_3_canonical_exclusion_location: "moscow_wont"
+  gate_5_canonical_exclusion_location: "exclusions_section"
+  canonical_exclusion_ids_required: true
+  wbs_levels_min: 2
+  wbs_levels_max: 3
+  wbs_levels_are_criteria_only: true
+  wbs_100_percent_rule_enabled: true
+  wbs_chunking_guidance_enabled: true
+  gate_blocking_rule: "explicit_required_items_including_post_closure_revision_and_gate_6b_only"
+  post_closure_revision_required: true
+  post_closure_student_elements_required: 2
+  post_closure_issue_restatement_required: false
+  exact_retry_labels_required: false
+  revision_evidence_may_accumulate_across_messages: true
+  full_answer_repaste_required_on_revision: false
+  criteria_feedback_max_items_while_closed: 1
+  criteria_can_block_gate: false
+  auto_grader_can_block_gate: false
+  cross_gate_inconsistency_blocks: false
+  gate_6_deliverable_traceability_blocks: true
+  wbs_effort_ceiling_person_hours: 525
+  wbs_effort_ceiling_period_end: "May_14"
+  detailed_cost_estimates_required_in_stage_1: false
+  resource_implications_required_in_stage_1: true
+  wbs_resource_vector_is_hard_check: true
+  wbs_resource_none_must_be_explicit: true
+  staff_time_dollar_costing_in_stage_1: false
+  daily_summary_max_lines: 4
+  telemetry_store_transcripts: false
+  telemetry_write_only: true
+  student_tab_identifier: "pseudonymous_key"
+  report_required: true
+  report_issuance_requires_gate_6_open: true
+  report_authoritative_issuer: "instructor_backend"
+  chatgpt_authoritative_pdf_rendering_allowed: false
+  issued_pdf_bytes_stored_server_side: true
+  redownload_reuses_stored_bytes: true
+  student_supplied_report_hash_trusted: false
+  instructor_verifier_required: true
+  report_registry_signature_required: true
+  public_report_storage_links_allowed: false
+  student_access_to_verification_registry: false
+  issue_report_current_artifact_delivery_exception: true
+  stage_attempt_number_source: "server"
+  report_request_can_create_new_attempt: false
+  report_single_page_required: true
+  report_regeneration_watermark_required: true
+  report_hash_verification_required: true
+  canvas_grade_is_authoritative: true
+
+course:
+  code: "V550"
+  stage: "Stage 1 — Scope"
+  term: "SET_BEFORE_DEPLOYMENT"
+  timezone: "America/Indiana/Indianapolis"
+  retention_days_after_term_end: "SET_FROM_IU_POLICY"
+  canvas_lms_is_grade_authority: true
+
+instructor_test_mode:
+  enabled: false
+  activation_authority: "authenticated_deployment_configuration_only"
+  environment: "production"
+  storage_isolated: true
+  test_storage_namespace: "SET_IN_ISOLATED_TEST_DEPLOYMENT"
+  production_storage_namespace: "production"
+  synthetic_student_keys_only: true
+  test_reports_must_be_marked: true
+  production_telemetry_writes_allowed: false
+  production_report_registry_writes_allowed: false
+  gate_truth_bypass_allowed: false
+  setup: "Clone the deployment into an instructor-only test environment, set environment=test, use isolated storage, and then enable test mode."
+  teardown: "Disable test mode, destroy or retain isolated fixtures per instructor policy, and verify the production deployment still reports enabled=false before rollout."
+
+onboarding:
+  collect_only_course_issued_pseudonymous_key: true
+  collect_second_student_credential: false
+  visible_consent_before_first_action: true
+  first_action: "startSession"
+  no_write_without_consent: true
+
+gate_flow:
+  - number: 1
+    name: "Big 5 Pre-Planning"
+  - number: 2
+    name: "Requirements"
+  - number: 3
+    name: "Expectations"
+  - number: 4
+    name: "Goals & Objectives"
+  - number: 5
+    name: "Scope of Work"
+  - number: 6
+    name: "Work Breakdown Structure"
+
+gate_6_internal_phase:
+  id: "6B"
+  name: "Assumption / Scope-Creep Audit and Revision"
+  numbered_gate: false
+
+legacy_outcome_mapping:
+  OPEN: "PASS"
+  CLOSED: "REVISE"
+  NO_MEANINGFUL_SUBMISSION: "INCOMPLETE"
+
+no_attempt_diagnostic:
+  milestone_outcome: "INCOMPLETE"
+  records_gate_attempt: false
+  records_gate_result: false
+  sets_prior_closure: false
+  activates_retry: false
+
+roles:
+  - "Main Scope Advisor"
+  - "Insights Agent"
+  - "Auto-Grader/Evaluator"
+  - "Summarizer"
+  - "WBS Decomposer & Action Plan"
+  - "Assumption Auditor"
+  - "Scope Review Board"
+
+pedagogy:
+  student_drafts_first: true
+  evaluate_without_drafting_student_answer: true
+  withhold_fix_on_failure: true
+  require_post_closure_revision_only_after_closed_attempt: true
+  evaluate_only_after_explicit_ready_signal: true
+  preserve_working_draft_fragments: true
+  questions_per_turn_default: 1
+  questions_per_turn_max: 2
+  guided_gate_start_max_words: 120
+  default_student_checklist_max_bullets: 6
+  no_attempt_support:
+    - "blank_structure"
+    - "guided_questions"
+    - "short_unrelated_example"
+  feedback_must_end_with_student_action: true
+
+wbs:
+  guidance_levels_min: 2
+  guidance_levels_max: 3
+  levels_are_criteria_only: true
+  work_package_minutes_guidance_min: 60
+  work_package_days_guidance_max: 7
+  prevote_people_hours_ceiling: 525
+  prevote_period_start: "January_12"
+  prevote_period_end: "May_14"
+  postvote_handoff_deadline: "June_1"
+
+summarizer:
+  maximum_lines: 4
+  maximum_characters_per_line: 240
+
+telemetry:
+  enabled: true
+  write_only: true
+  store_transcripts: false
+  store_drafts: false
+  store_evidence_excerpts: false
+  store_hidden_reasoning: false
+  store_direct_identifiers: false
+  store_sensitive_information: false
+  store_actual_grades: false
+  daily_summary_stable_key: "student_key + course_date + stage"
+  request_rate_limit_per_minute: 30
+  maximum_payload_bytes: 16384
+  script_properties:
+    - "CLASS_DEPLOYMENT_TOKEN"
+    - "ACTIVE_STUDENT_KEYS_JSON"
+    - "WORKBOOK_ID"
+    - "REPORT_DRIVE_FOLDER_ID"
+    - "REPORT_HMAC_KEYS_JSON"
+    - "REPORT_HMAC_ACTIVE_KEY_VERSION"
+    - "REPORT_TEMPLATE_VERSION"
+    - "REPORT_SCHEMA_VERSION"
+    - "REPORT_CAPABILITY_TTL_SECONDS"
+    - "INSTRUCTOR_VERIFIER_TOKEN"
+
+action_api:
+  operations:
+    - "startSession"
+    - "logEvent"
+    - "closeSession"
+    - "issueReport"
+  arbitrary_workbook_reads_allowed: false
+  issue_report_delivery_exception_is_narrow: true
+
+event_vocabulary:
+  - "consent_recorded"
+  - "session_started"
+  - "role_framing_submitted"
+  - "requirements_submitted"
+  - "expectations_submitted"
+  - "moscow_submitted"
+  - "goals_objectives_submitted"
+  - "smart_check_completed"
+  - "deliverables_submitted"
+  - "project_statement_submitted"
+  - "scope_boundaries_submitted"
+  - "scope_action_plan_submitted"
+  - "wbs_submitted"
+  - "assumption_audit_completed"
+  - "draft_submitted"
+  - "critique_given"
+  - "critique_answered"
+  - "revision_submitted"
+  - "justification_submitted"
+  - "scope_creep_flagged"
+  - "misconception_flagged"
+  - "gate_attempt"
+  - "gate_result"
+  - "report_issued"
+  - "report_regenerated"
+  - "session_closed"
+  - "daily_summary_written"
+
+report:
+  title: "V550 AI Usage & Learning Report"
+  page_size: "US_LETTER"
+  maximum_pages: 1
+  minimum_body_font_points: 9
+  authoritative_issuer: "instructor_backend"
+  render_from_server_held_sanitized_state_only: true
+  store_exact_bytes_before_hashing: true
+  hash_algorithm: "SHA-256"
+  registry_signature_algorithm: "HMAC-SHA256"
+  status_vocabulary_source: "gpt/knowledge/generated/frozen-six-gates.md#FROZEN_MACHINE_CONTRACT_JSON"
+  preserve_prior_issuances: true
+  capability_expiry_minutes: "SET_BEFORE_DEPLOYMENT"
+
+versions:
+  schema: "1.0.0"
+  protocol: "2.0.0"
+  rubric: "2.0.0"
+  report: "2.0.0"
+
+misconception_taxonomy:
+  - "requirements_expectations_conflated"
+  - "goal_objective_conflated"
+  - "solution_chosen_before_requirements"
+  - "activity_mislabeled_as_deliverable"
+  - "success_criterion_not_measurable"
+  - "missing_exclusion"
+  - "assumption_presented_as_fact"
+  - "ownerless_action"
+  - "vague_wbs_work_package"
+  - "wbs_overlap_or_gap"
+  - "scope_creep_unacknowledged"
+  - "stage2_scheduling_pulled_into_stage1"

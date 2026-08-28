@@ -1,0 +1,417 @@
+{
+  "schema_version": "2.0.0",
+  "runner": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s pm-studio-plus/tests -p 'test_*.py'",
+  "cases": [
+    {
+      "id": "AC-001",
+      "category": "frozen-gates",
+      "requirement": "Exactly six ordered gates open for complete first attempts; no seventh gate exists.",
+      "mode": "automated",
+      "evidence": [
+        "test_frozen_gates.FrozenGateTruthTableTests.test_exactly_six_ordered_gates_open_on_complete_first_attempts",
+        "test_frozen_gates.FrozenGateTruthTableTests.test_gate_cli_uses_zero_one_two_exit_contract"
+      ]
+    },
+    {
+      "id": "AC-002",
+      "category": "gate-1",
+      "requirement": "Every Gate 1 hard check closes independently and withholds the fix.",
+      "mode": "automated",
+      "evidence": [
+        "test_frozen_gates.FrozenGateTruthTableTests.test_gate_1_each_hard_check_closes",
+        "test_frozen_gates.FrozenGateTruthTableTests.test_frozen_demo_gate_1_literal_input_closes_exactly"
+      ]
+    },
+    {
+      "id": "AC-003",
+      "category": "gate-1",
+      "requirement": "Weak patron and plan-type reasoning remain criteria feedback only.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_1_criteria_are_feedback_only"]
+    },
+    {
+      "id": "AC-004",
+      "category": "gate-2",
+      "requirement": "Every Gate 2 hard check, including each quality field, closes independently.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_2_each_hard_check_closes"]
+    },
+    {
+      "id": "AC-005",
+      "category": "gate-2",
+      "requirement": "Supplied ADA/fire-code constraints do not false-fail inside the no-capital boundary.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_2_ada_within_no_capital_boundary_does_not_false_fail"]
+    },
+    {
+      "id": "AC-006",
+      "category": "gate-2",
+      "requirement": "Ordinary cross-gate inconsistency is feedback, not a hidden hard check.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_2_cross_gate_disconnect_is_feedback_only"]
+    },
+    {
+      "id": "AC-007",
+      "category": "gate-3",
+      "requirement": "Every Gate 3 hard check closes, including canonical ID/location and duplication.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_3_each_hard_check_closes"]
+    },
+    {
+      "id": "AC-008",
+      "category": "gate-3",
+      "requirement": "All five canonical exclusions pass only as distinct requirement-tagged Won't entries.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_3_all_five_canonical_wonts_pass_location_check"]
+    },
+    {
+      "id": "AC-009",
+      "category": "gate-4",
+      "requirement": "Every one of Gate 4's five frozen binary hard checks closes independently.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_4_each_hard_check_closes"]
+    },
+    {
+      "id": "AC-010",
+      "category": "gate-4",
+      "requirement": "SMART and success-criterion weakness remain nonblocking feedback.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_4_weak_smart_and_success_criteria_are_feedback_only"]
+    },
+    {
+      "id": "AC-011",
+      "category": "gate-5",
+      "requirement": "Every Gate 5 hard check closes independently.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_5_each_hard_check_closes"]
+    },
+    {
+      "id": "AC-012",
+      "category": "gate-5",
+      "requirement": "Action-line ownership and optional expectation reconciliation do not become hidden hard checks.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_5_action_owner_and_cross_gate_optional_exclusion_do_not_block"]
+    },
+    {
+      "id": "AC-013",
+      "category": "gate-6",
+      "requirement": "Gate 6 enforces deliverable traceability, scope, preplanning, owner, hierarchy, time, summary, and 525-hour checks.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_6_each_structural_hard_check_closes"]
+    },
+    {
+      "id": "AC-014",
+      "category": "gate-6",
+      "requirement": "Every resource-vector category rejects omission, blank, N/A, as-needed, and negative facilitator days.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_6_resource_vector_rejects_every_incomplete_form"]
+    },
+    {
+      "id": "AC-015",
+      "category": "gate-6",
+      "requirement": "Explicit zero and NONE values pass structural resource validation.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_6_zero_and_none_resource_values_pass_structurally"]
+    },
+    {
+      "id": "AC-016",
+      "category": "gate-6",
+      "requirement": "Depth, 100-percent-rule judgment, and vague naming remain criteria feedback.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_gate_6_criteria_do_not_become_hidden_hard_checks"]
+    },
+    {
+      "id": "AC-017",
+      "category": "gate-6b",
+      "requirement": "Internal Gate 6B enforces all five audit components and reconciliation rules without creating Gate 7.",
+      "mode": "automated",
+      "evidence": [
+        "test_frozen_gates.FrozenGateTruthTableTests.test_gate_6b_is_internal_to_gate_6_and_each_hard_check_closes",
+        "test_frozen_gates.FrozenGateTruthTableTests.test_gate_6b_complete_student_authored_no_change_can_open_gate_6"
+      ]
+    },
+    {
+      "id": "AC-018",
+      "category": "post-closure-revision",
+      "requirement": "Only the corrected or expanded answer and one improvement reason apply after a prior closure; ordinary prose is accepted without issue restatement, prescribed labels, or a full re-paste.",
+      "mode": "automated",
+      "evidence": [
+        "test_frozen_gates.FrozenGateTruthTableTests.test_two_revision_elements_are_required_only_after_a_closed_attempt",
+        "test_companion_experience.CompanionExperienceTests.test_09_natural_revision_prose_satisfies_two_elements",
+        "test_companion_experience.CompanionExperienceTests.test_10_revision_merges_only_revised_q3_with_preserved_work",
+        "test_companion_experience.CompanionExperienceTests.test_11_missing_revision_reason_creates_one_pending_reflection"
+      ]
+    },
+    {
+      "id": "AC-019",
+      "category": "response-contract",
+      "requirement": "A closed attempt names every failed hard check and withholds a replacement answer.",
+      "mode": "automated",
+      "evidence": ["test_frozen_gates.FrozenGateTruthTableTests.test_multiple_hard_failures_are_all_named"]
+    },
+    {
+      "id": "AC-020",
+      "category": "canonical",
+      "requirement": "The manifest declares exactly four canonical sources, including the one-example instructor registry, with correct hashes and byte-identical destinations.",
+      "mode": "automated",
+      "evidence": [
+        "test_canonical_knowledge.CanonicalKnowledgeTests.test_manifest_declares_exactly_four_canonical_sources",
+        "test_canonical_knowledge.CanonicalKnowledgeTests.test_manifest_hashes_and_every_destination_match_canonical_bytes",
+        "test_canonical_knowledge.CanonicalKnowledgeTests.test_invalid_comparison_example_registry_fails_as_instructor_material_needed"
+      ]
+    },
+    {
+      "id": "AC-021",
+      "category": "canonical",
+      "requirement": "One-byte generated-copy drift fails verification and deterministic sync restores equality.",
+      "mode": "automated",
+      "evidence": ["test_canonical_knowledge.CanonicalKnowledgeTests.test_one_byte_drift_fails_then_deterministic_sync_restores"]
+    },
+    {
+      "id": "AC-022",
+      "category": "pedagogy",
+      "requirement": "Student-first instructions withhold the fix and contain no stale preliminary-draft contract.",
+      "mode": "automated-static",
+      "evidence": [
+        "test_pedagogy_forward_contract.PedagogyAndForwardContractTests.test_student_first_loop_withholds_project_specific_fix",
+        "test_pedagogy_forward_contract.PedagogyAndForwardContractTests.test_stale_answer_generation_contract_is_absent"
+      ]
+    },
+    {
+      "id": "AC-023",
+      "category": "forward",
+      "requirement": "No-attempt and token submissions remain diagnostic INCOMPLETE without a gate evaluation, model answer, or answer bank.",
+      "mode": "automated",
+      "evidence": ["test_pedagogy_forward_contract.PedagogyAndForwardContractTests.test_empty_and_token_gate_submissions_remain_diagnostic_without_an_answer_bank"]
+    },
+    {
+      "id": "AC-024",
+      "category": "forward",
+      "requirement": "Direct-answer, definition, injection, sensitive-data, retry, and criteria cases are versioned and complete.",
+      "mode": "automated-contract",
+      "evidence": [
+        "test_pedagogy_forward_contract.PedagogyAndForwardContractTests.test_direct_answer_and_injection_forward_cases_are_complete_and_unique",
+        "test_pedagogy_forward_contract.PedagogyAndForwardContractTests.test_every_forward_expectation_has_an_executable_runtime_policy"
+      ]
+    },
+    {
+      "id": "AC-025",
+      "category": "telemetry",
+      "requirement": "Only four write operations exist and unknown/read operations fail closed.",
+      "mode": "automated",
+      "evidence": [
+        "test_telemetry_backend_contract.TelemetryValidatorTests.test_operation_vocabulary_is_exactly_four",
+        "test_telemetry_backend_contract.TelemetryValidatorTests.test_telemetry_cli_exit_status_matches_validation_result",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_openapi_exposes_only_four_post_operations"
+      ]
+    },
+    {
+      "id": "AC-026",
+      "category": "consent",
+      "requirement": "Consent assertion/version/time are required and the backend writes consent before session start.",
+      "mode": "automated",
+      "evidence": [
+        "test_telemetry_backend_contract.TelemetryValidatorTests.test_consent_assertion_version_and_observed_time_are_required",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_start_session_persists_consent_before_session_started"
+      ]
+    },
+    {
+      "id": "AC-027",
+      "category": "telemetry",
+      "requirement": "Client attempt, generation, report prose, bytes, hashes, signatures, and storage IDs are rejected.",
+      "mode": "automated",
+      "evidence": [
+        "test_telemetry_backend_contract.TelemetryValidatorTests.test_client_cannot_supply_server_attempt_generation_or_report_material",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_issue_report_wire_request_matches_backend_validator",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_issue_report_response_is_the_narrow_existing_receipt"
+      ]
+    },
+    {
+      "id": "AC-028",
+      "category": "privacy",
+      "requirement": "Telemetry rejects transcripts, drafts, identifiers, sensitive or emotional-disclosure prose, and formula injection.",
+      "mode": "automated",
+      "evidence": ["test_telemetry_backend_contract.TelemetryValidatorTests.test_transcript_draft_direct_identifier_sensitive_and_formula_content_fail"]
+    },
+    {
+      "id": "AC-029",
+      "category": "server-state",
+      "requirement": "Stage attempts and report generations are server-derived under lock.",
+      "mode": "automated-static",
+      "evidence": ["test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_stage_attempt_and_generation_are_derived_under_lock"]
+    },
+    {
+      "id": "AC-030",
+      "category": "report-authorization",
+      "requirement": "Report issuance requires Gate 6 OPEN after Gate 6B and qualifying revision/gate activity for a new attempt.",
+      "mode": "automated-contract",
+      "evidence": [
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_report_requires_gate_6_open_after_gate_6b",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_gate_6_pass_is_normalized_and_audit_checked_before_event_append"
+      ]
+    },
+    {
+      "id": "AC-031",
+      "category": "report-issuer",
+      "requirement": "The backend renders, stores, rereads, hashes, signs, and links immutable report bytes.",
+      "mode": "automated-static",
+      "evidence": ["test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_backend_renders_stores_rereads_hashes_and_signs_exact_bytes"]
+    },
+    {
+      "id": "AC-032",
+      "category": "report-download",
+      "requirement": "Redownload uses an expiring student/report-bound capability and streams stored bytes without rerendering.",
+      "mode": "automated-static",
+      "evidence": ["test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_redownload_streams_stored_bytes_and_does_not_rerender"]
+    },
+    {
+      "id": "AC-033",
+      "category": "report-integrity",
+      "requirement": "Original, regenerated, tampered, copied-ID, and forged-receipt byte tests use authenticated receipts.",
+      "mode": "automated",
+      "evidence": [
+        "test_report_integrity.ReportIntegrityTests.test_valid_original_has_exact_status",
+        "test_report_integrity.ReportIntegrityTests.test_valid_regenerated_copy_has_exact_generation_status",
+        "test_report_integrity.ReportIntegrityTests.test_manual_pdf_edit_fails",
+        "test_report_integrity.ReportIntegrityTests.test_edited_pdf_and_matching_edited_receipt_hash_still_fail_hmac",
+        "test_report_integrity.ReportIntegrityTests.test_copied_report_id_with_different_bytes_fails"
+      ]
+    },
+    {
+      "id": "AC-034",
+      "category": "report-keys",
+      "requirement": "Signing-key rotation preserves historical verification without accepting unknown versions.",
+      "mode": "automated",
+      "evidence": [
+        "test_report_integrity.ReportIntegrityTests.test_unknown_key_version_and_wrong_key_fail_closed",
+        "test_report_integrity.ReportIntegrityTests.test_key_rotation_preserves_historical_verification"
+      ]
+    },
+    {
+      "id": "AC-035",
+      "category": "report-verifier",
+      "requirement": "The instructor-only verifier returns exactly the four frozen statuses and is not a GPT Action.",
+      "mode": "automated-static",
+      "evidence": ["test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_instructor_verifier_has_exact_four_statuses_and_is_not_an_action"]
+    },
+    {
+      "id": "AC-036",
+      "category": "report-layout",
+      "requirement": "The issued report is one readable flattened US Letter page.",
+      "mode": "automated",
+      "evidence": ["test_report_integrity.ReportIntegrityTests.test_report_must_be_single_us_letter_flattened_and_readable"]
+    },
+    {
+      "id": "AC-037",
+      "category": "workbook-privacy",
+      "requirement": "StudentIndex is hidden and protected, and Drive/Sheets scopes support restricted storage.",
+      "mode": "automated-static",
+      "evidence": [
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_student_index_is_protected_not_merely_hidden",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_apps_script_scopes_cover_restricted_sheet_and_drive_storage"
+      ]
+    },
+    {
+      "id": "AC-038",
+      "category": "schemas",
+      "requirement": "Unchanged schemas validate representative local models, resolve bundled references offline, and fail closed on an unbundled reference.",
+      "mode": "automated",
+      "evidence": [
+        "test_schema_validation.SchemaValidationTests.test_living_project_file_resolves_bundled_refs_offline",
+        "test_schema_validation.SchemaValidationTests.test_authoritative_report_example_is_schema_valid",
+        "test_schema_validation.SchemaValidationTests.test_unbundled_remote_ref_fails_closed_without_fetching"
+      ]
+    },
+    {
+      "id": "AC-039",
+      "category": "frozen-provenance",
+      "requirement": "Frozen validation is the default for Scope/LPF models, prohibits AI-authored assessed artifacts, and permits truthful AI-suggestion provenance only in the critique lineage ledger.",
+      "mode": "automated",
+      "evidence": [
+        "test_schema_validation.SchemaValidationTests.test_frozen_policy_allows_ai_provenance_only_in_lineage_ledger",
+        "test_schema_validation.SchemaValidationTests.test_scope_cli_applies_frozen_policy_by_default"
+      ]
+    },
+    {
+      "id": "AC-040",
+      "category": "telemetry-privacy",
+      "requirement": "The live Apps Script validator rejects sensitive medical, immigration, disciplinary, financial, credential, and emotional-disclosure content in otherwise allowed text fields.",
+      "mode": "automated-contract",
+      "evidence": [
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_live_apps_script_rejects_sensitive_allowed_field_values"
+      ]
+    },
+    {
+      "id": "AC-041",
+      "category": "server-attempt-state",
+      "requirement": "Gate lifecycle events use one controlled identity, a later attempt activates only for matching affected-gate work, and every affected/downstream gate reopens in order through Gate 6B.",
+      "mode": "automated-contract",
+      "evidence": [
+        "test_telemetry_backend_contract.TelemetryValidatorTests.test_gate_lifecycle_events_require_one_canonical_identity",
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_apps_script_derives_affected_attempt_and_enforces_downstream_order"
+      ]
+    },
+    {
+      "id": "AC-042",
+      "category": "report-model",
+      "requirement": "The backend builds and deterministically validates the authoritative snake-case model with truthful post-storage receipt values against the unchanged report schema.",
+      "mode": "automated-contract",
+      "evidence": [
+        "test_telemetry_backend_contract.PublicActionAndAppsScriptContractTests.test_server_report_builder_emits_and_validates_unchanged_schema_shape"
+      ]
+    },
+    {
+      "id": "AC-043",
+      "category": "schema-authority-conflict",
+      "requirement": "The locked evaluator gate-result PASS/advisory contradiction remains explicit and tested without changing the schema or falsifying advisory facts.",
+      "mode": "automated",
+      "evidence": [
+        "test_schema_validation.SchemaValidationTests.test_unchanged_evaluator_gate_result_exposes_advisory_pass_conflict"
+      ]
+    },
+    {
+      "id": "AC-044",
+      "category": "companion-experience",
+      "requirement": "All thirty-six mandatory companion-experience behaviors are enforced as executable regressions, including focus paths, source correction, injection resistance, isolated testing, grounding, and bounded numeric judgment, without weakening the canonical hard checks.",
+      "mode": "automated",
+      "evidence": [
+        "test_companion_experience.CompanionExperienceTests.test_01_partial_answer_is_saved_without_evaluation",
+        "test_companion_experience.CompanionExperienceTests.test_02_newline_fragments_accumulate_as_one_draft",
+        "test_companion_experience.CompanionExperienceTests.test_03_ready_signal_alone_starts_formal_review",
+        "test_companion_experience.CompanionExperienceTests.test_04_r_and_d_term_is_explained_as_an_evidence_check",
+        "test_companion_experience.CompanionExperienceTests.test_05_scenario_fact_recovery_advances_after_two_failed_hints",
+        "test_companion_experience.CompanionExperienceTests.test_06_part_c_supplies_exactly_one_approved_comparison_example",
+        "test_companion_experience.CompanionExperienceTests.test_07_single_example_completion_is_preserved_without_a_second",
+        "test_companion_experience.CompanionExperienceTests.test_08_closed_gate_response_is_usable_and_hides_internal_ids",
+        "test_companion_experience.CompanionExperienceTests.test_09_natural_revision_prose_satisfies_two_elements",
+        "test_companion_experience.CompanionExperienceTests.test_10_revision_merges_only_revised_q3_with_preserved_work",
+        "test_companion_experience.CompanionExperienceTests.test_11_missing_revision_reason_creates_one_pending_reflection",
+        "test_companion_experience.CompanionExperienceTests.test_12_repeated_blocker_advances_to_handoff",
+        "test_companion_experience.CompanionExperienceTests.test_13_distress_pauses_evaluation_without_persisting_emotional_words",
+        "test_companion_experience.CompanionExperienceTests.test_14_ordinary_student_message_avoids_implementation_jargon",
+        "test_companion_experience.CompanionExperienceTests.test_15_magic_words_do_not_satisfy_semantic_checks",
+        "test_companion_experience.CompanionExperienceTests.test_16_full_checklist_request_is_coaching_not_submission",
+        "test_companion_experience.CompanionExperienceTests.test_17_guided_parts_assemble_to_same_canonical_open_result",
+        "test_companion_experience.CompanionExperienceTests.test_18_product_error_preserves_work_without_a_gate_attempt",
+        "test_companion_experience.CompanionExperienceTests.test_19_difficulty_reduction_is_operational_not_psychometric",
+        "test_companion_experience.CompanionExperienceTests.test_20_gate_focus_paths_cover_all_six_gates_without_new_checks",
+        "test_companion_experience.CompanionExperienceTests.test_21_planning_history_focus_emphasizes_learning_and_reuse",
+        "test_companion_experience.CompanionExperienceTests.test_22_authority_and_support_focus_preserves_defensible_judgment",
+        "test_companion_experience.CompanionExperienceTests.test_23_requirements_to_expectations_bridge_is_nonblocking",
+        "test_companion_experience.CompanionExperienceTests.test_24_out_of_scope_objective_is_never_a_model_answer",
+        "test_companion_experience.CompanionExperienceTests.test_25_deliverable_focus_requires_student_language_and_approvers",
+        "test_companion_experience.CompanionExperienceTests.test_26_gate_5_and_6_realism_remains_calibration_only",
+        "test_companion_experience.CompanionExperienceTests.test_27_no_override_phrase_changes_no_state_and_offers_recheck",
+        "test_companion_experience.CompanionExperienceTests.test_28_ai_error_correction_and_source_conflict_preserve_attempt",
+        "test_companion_experience.CompanionExperienceTests.test_29_prompt_injection_in_text_and_upload_is_inert",
+        "test_companion_experience.CompanionExperienceTests.test_30_testing_mode_requires_authenticated_isolated_configuration",
+        "test_companion_experience.CompanionExperienceTests.test_31_grounding_map_has_local_locators_and_no_pmbok_claim",
+        "test_companion_experience.CompanionExperienceTests.test_32_supported_approximation_passes_without_resubmission",
+        "test_companion_experience.CompanionExperienceTests.test_33_fixed_facts_do_not_receive_approximation_tolerance",
+        "test_companion_experience.CompanionExperienceTests.test_34_hard_boundary_recomputes_530_against_525_exactly",
+        "test_companion_experience.CompanionExperienceTests.test_35_numeric_feedback_avoids_cosmetic_and_full_gate_loops",
+        "test_companion_experience.CompanionExperienceTests.test_36_explanation_cannot_bypass_unsound_numeric_work"
+      ]
+    }
+  ]
+}

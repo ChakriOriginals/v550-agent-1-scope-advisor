@@ -1,0 +1,1559 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/scope-artifacts.schema.json",
+  "title": "V550 Stage 1 Scope Artifacts",
+  "description": "Strict contracts for the student-authored Stage 1 scope artifacts. The root validates a complete artifact package; individual models are exposed through $defs.",
+  "$ref": "#/$defs/scope_artifact_package",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "short_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "long_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "artifact_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "version",
+        "completion_status",
+        "content_origin",
+        "ai_draft_label",
+        "updated_at"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "completion_status": {
+          "type": "string",
+          "enum": [
+            "in_progress",
+            "complete"
+          ]
+        },
+        "content_origin": {
+          "type": "string",
+          "enum": [
+            "student_originated",
+            "ai_suggested",
+            "mixed"
+          ]
+        },
+        "ai_draft_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "PRELIMINARY DRAFT — FOR STUDENT CRITIQUE",
+            null
+          ]
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "content_origin": {
+                "enum": [
+                  "ai_suggested",
+                  "mixed"
+                ]
+              }
+            },
+            "required": [
+              "content_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ai_draft_label": {
+                "const": "PRELIMINARY DRAFT — FOR STUDENT CRITIQUE"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ai_draft_label": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "verification_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_id",
+        "statement",
+        "verification_status",
+        "authority_or_source"
+      ],
+      "properties": {
+        "item_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "verification_status": {
+          "type": "string",
+          "enum": [
+            "not_required",
+            "student_supplied_verify",
+            "verified_by_approved_source"
+          ]
+        },
+        "authority_or_source": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verification_status": {
+                "const": "verified_by_approved_source"
+              }
+            },
+            "required": [
+              "verification_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "authority_or_source": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "project_statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "trigger",
+        "action",
+        "frequency_and_timing",
+        "scope_breadth_and_complexity",
+        "context_items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "trigger": {
+          "$ref": "#/$defs/long_text"
+        },
+        "action": {
+          "$ref": "#/$defs/long_text"
+        },
+        "frequency_and_timing": {
+          "$ref": "#/$defs/long_text"
+        },
+        "scope_breadth_and_complexity": {
+          "$ref": "#/$defs/long_text"
+        },
+        "context_items": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "classification",
+              "statement",
+              "verification_status"
+            ],
+            "properties": {
+              "item_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "classification": {
+                "type": "string",
+                "enum": [
+                  "assumption",
+                  "constraint",
+                  "uncertainty"
+                ]
+              },
+              "statement": {
+                "$ref": "#/$defs/long_text"
+              },
+              "verification_status": {
+                "type": "string",
+                "enum": [
+                  "not_required",
+                  "student_supplied_verify",
+                  "verified_by_approved_source"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "requirement_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "category",
+        "statement",
+        "non_negotiable",
+        "source_status",
+        "approved_source_locator",
+        "rationale"
+      ],
+      "properties": {
+        "requirement_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "project",
+            "business",
+            "quality",
+            "stakeholder",
+            "solution_or_functional",
+            "transition",
+            "regulatory",
+            "political_or_funder",
+            "client_timing_or_participation",
+            "other_instructor_approved"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "non_negotiable": {
+          "const": true
+        },
+        "source_status": {
+          "type": "string",
+          "enum": [
+            "student_supplied",
+            "student_supplied_verify",
+            "course_rule",
+            "verified_approved_source"
+          ]
+        },
+        "approved_source_locator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "rationale": {
+          "$ref": "#/$defs/long_text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "const": "regulatory"
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "properties": {
+              "source_status": {
+                "enum": [
+                  "student_supplied_verify",
+                  "verified_approved_source"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "source_status": {
+                "const": "verified_approved_source"
+              }
+            },
+            "required": [
+              "source_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "approved_source_locator": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "approved_source_locator": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/requirement_item"
+          }
+        }
+      }
+    },
+    "expectation_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectation_id",
+        "statement",
+        "stakeholder_category",
+        "moscow",
+        "conflicts_with_ids",
+        "is_disguised_solution"
+      ],
+      "properties": {
+        "expectation_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "stakeholder_category": {
+          "type": "string",
+          "enum": [
+            "client_or_sponsor",
+            "project_team",
+            "community_or_user",
+            "funder_or_approver",
+            "other_instructor_approved"
+          ]
+        },
+        "moscow": {
+          "type": "string",
+          "enum": [
+            "must_have",
+            "should_have",
+            "could_have",
+            "wont_have"
+          ]
+        },
+        "conflicts_with_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "is_disguised_solution": {
+          "const": false
+        }
+      }
+    },
+    "expectations_moscow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "biggest_client_hope",
+        "biggest_failure_condition",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "biggest_client_hope": {
+          "$ref": "#/$defs/long_text"
+        },
+        "biggest_failure_condition": {
+          "$ref": "#/$defs/long_text"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/expectation_item"
+          }
+        }
+      }
+    },
+    "goal_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "goal_id",
+        "statement",
+        "directional",
+        "long_term",
+        "directly_measurable"
+      ],
+      "properties": {
+        "goal_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "directional": {
+          "const": true
+        },
+        "long_term": {
+          "const": true
+        },
+        "directly_measurable": {
+          "const": false
+        }
+      }
+    },
+    "goals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/goal_item"
+          }
+        }
+      }
+    },
+    "success_criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "statement",
+        "tangible",
+        "quantifiable",
+        "yes_no_completion_question"
+      ],
+      "properties": {
+        "criterion_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "tangible": {
+          "const": true
+        },
+        "quantifiable": {
+          "const": true
+        },
+        "yes_no_completion_question": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500,
+          "pattern": "^Did (we|the project) .+\\?$"
+        }
+      }
+    },
+    "objective_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective_id",
+        "goal_ids",
+        "statement",
+        "smart_check",
+        "success_criterion"
+      ],
+      "properties": {
+        "objective_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "goal_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "smart_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "specific",
+            "measurable",
+            "achievable_or_attainable",
+            "relevant_or_realistic",
+            "time_based"
+          ],
+          "properties": {
+            "specific": {
+              "const": true
+            },
+            "measurable": {
+              "const": true
+            },
+            "achievable_or_attainable": {
+              "const": true
+            },
+            "relevant_or_realistic": {
+              "const": true
+            },
+            "time_based": {
+              "const": true
+            }
+          }
+        },
+        "success_criterion": {
+          "$ref": "#/$defs/success_criterion"
+        }
+      }
+    },
+    "objectives_success_criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/objective_item"
+          }
+        }
+      }
+    },
+    "goals_objectives_success_criteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "goals",
+        "objectives_success_criteria"
+      ],
+      "properties": {
+        "goals": {
+          "$ref": "#/$defs/goals"
+        },
+        "objectives_success_criteria": {
+          "$ref": "#/$defs/objectives_success_criteria"
+        }
+      }
+    },
+    "deliverable_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deliverable_id",
+        "name",
+        "description",
+        "is_output",
+        "output_type",
+        "objective_ids",
+        "phase",
+        "sequence",
+        "dependency_ids",
+        "approval_role",
+        "approval_point"
+      ],
+      "properties": {
+        "deliverable_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "name": {
+          "$ref": "#/$defs/short_text"
+        },
+        "description": {
+          "$ref": "#/$defs/long_text"
+        },
+        "is_output": {
+          "const": true
+        },
+        "output_type": {
+          "type": "string",
+          "enum": [
+            "tangible",
+            "intangible"
+          ]
+        },
+        "objective_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "phase": {
+          "$ref": "#/$defs/short_text"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "dependency_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "approval_role": {
+          "$ref": "#/$defs/short_text"
+        },
+        "approval_point": {
+          "$ref": "#/$defs/long_text"
+        }
+      }
+    },
+    "deliverables": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/deliverable_item"
+          }
+        }
+      }
+    },
+    "scope_of_work": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "high_level_description",
+        "detailed_scheduling_included"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "high_level_description": {
+          "$ref": "#/$defs/long_text"
+        },
+        "detailed_scheduling_included": {
+          "const": false
+        }
+      }
+    },
+    "boundary_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundary_id",
+        "statement",
+        "rationale",
+        "requirement_ids"
+      ],
+      "properties": {
+        "boundary_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "rationale": {
+          "$ref": "#/$defs/long_text"
+        },
+        "requirement_ids": {
+          "type": "array",
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        }
+      }
+    },
+    "boundary_list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "boundary_kind",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "boundary_kind": {
+          "type": "string",
+          "enum": [
+            "in_scope",
+            "out_of_scope",
+            "exclusion"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/boundary_item"
+          }
+        }
+      }
+    },
+    "scope_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "in_scope",
+        "out_of_scope",
+        "exclusions"
+      ],
+      "properties": {
+        "in_scope": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/boundary_list"
+            },
+            {
+              "properties": {
+                "boundary_kind": {
+                  "const": "in_scope"
+                }
+              }
+            }
+          ]
+        },
+        "out_of_scope": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/boundary_list"
+            },
+            {
+              "properties": {
+                "boundary_kind": {
+                  "const": "out_of_scope"
+                }
+              }
+            }
+          ]
+        },
+        "exclusions": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/boundary_list"
+            },
+            {
+              "properties": {
+                "boundary_kind": {
+                  "const": "exclusion"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "scope_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "deliverable_id",
+        "action_verb",
+        "activity",
+        "owner_role",
+        "assignment_rationale",
+        "dependency_ids",
+        "approval_points",
+        "real_project_confirmation_needed",
+        "detailed_stage2_planning_included"
+      ],
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "deliverable_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "action_verb": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 32,
+          "pattern": "^[A-Z][A-Za-z-]*$"
+        },
+        "activity": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 500,
+          "pattern": "^[A-Z][A-Za-z-]+\\b.+"
+        },
+        "owner_role": {
+          "$ref": "#/$defs/short_text"
+        },
+        "assignment_rationale": {
+          "$ref": "#/$defs/long_text"
+        },
+        "dependency_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "approval_points": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "real_project_confirmation_needed": {
+          "type": "boolean"
+        },
+        "detailed_stage2_planning_included": {
+          "const": false
+        }
+      }
+    },
+    "scope_action_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "actions"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 250,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/scope_action"
+          }
+        }
+      }
+    },
+    "wbs_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wbs_id",
+        "parent_id",
+        "level",
+        "node_type",
+        "name",
+        "owner_role",
+        "deliverable_id",
+        "action_plan_item_id"
+      ],
+      "properties": {
+        "wbs_id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*(\\.[1-9][0-9]*){0,2}$",
+          "maxLength": 32
+        },
+        "parent_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[1-9][0-9]*(\\.[1-9][0-9]*){0,1}$",
+          "maxLength": 32
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3
+        },
+        "node_type": {
+          "type": "string",
+          "enum": [
+            "deliverable",
+            "phase",
+            "work_package",
+            "task"
+          ]
+        },
+        "name": {
+          "$ref": "#/$defs/short_text"
+        },
+        "owner_role": {
+          "$ref": "#/$defs/short_text"
+        },
+        "deliverable_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "action_plan_item_id": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "wbs_dictionary_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wbs_id",
+        "description",
+        "acceptance_criteria",
+        "scope_boundary",
+        "owner_role",
+        "dependency_ids",
+        "chunk_minutes",
+        "chunking_guidance_applicable"
+      ],
+      "properties": {
+        "wbs_id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*(\\.[1-9][0-9]*){0,2}$",
+          "maxLength": 32
+        },
+        "description": {
+          "$ref": "#/$defs/long_text"
+        },
+        "acceptance_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 25,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "scope_boundary": {
+          "$ref": "#/$defs/long_text"
+        },
+        "owner_role": {
+          "$ref": "#/$defs/short_text"
+        },
+        "dependency_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "chunk_minutes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 60,
+          "maximum": 10080
+        },
+        "chunking_guidance_applicable": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "chunking_guidance_applicable": {
+                "const": true
+              }
+            },
+            "required": [
+              "chunking_guidance_applicable"
+            ]
+          },
+          "then": {
+            "properties": {
+              "chunk_minutes": {
+                "type": "integer"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "chunk_minutes": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "wbs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "decomposition_basis",
+        "student_selection_rationale",
+        "levels_used",
+        "nodes",
+        "dictionary",
+        "coverage_check"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "decomposition_basis": {
+          "type": "string",
+          "enum": [
+            "deliverable_based",
+            "phase_based",
+            "hybrid"
+          ]
+        },
+        "student_selection_rationale": {
+          "$ref": "#/$defs/long_text"
+        },
+        "levels_used": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 3
+        },
+        "nodes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 500,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wbs_node"
+          }
+        },
+        "dictionary": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/wbs_dictionary_entry"
+          }
+        },
+        "coverage_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "one_hundred_percent_rule_passed",
+            "gap_ids",
+            "overlap_ids",
+            "consistent_depth",
+            "false_precision_detected"
+          ],
+          "properties": {
+            "one_hundred_percent_rule_passed": {
+              "const": true
+            },
+            "gap_ids": {
+              "type": "array",
+              "maxItems": 100,
+              "items": {
+                "$ref": "#/$defs/identifier"
+              }
+            },
+            "overlap_ids": {
+              "type": "array",
+              "maxItems": 100,
+              "items": {
+                "$ref": "#/$defs/identifier"
+              }
+            },
+            "consistent_depth": {
+              "const": true
+            },
+            "false_precision_detected": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "wbs_and_wbs_dictionary": {
+      "$ref": "#/$defs/wbs"
+    },
+    "assumption_log_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assumption_id",
+        "statement",
+        "classification",
+        "owner_role",
+        "validation_method",
+        "due_point",
+        "status",
+        "consequence_if_false",
+        "authority_or_source_needed"
+      ],
+      "properties": {
+        "assumption_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "statement": {
+          "$ref": "#/$defs/long_text"
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "requirement",
+            "expectation",
+            "assumption",
+            "constraint",
+            "uncertainty",
+            "dependency",
+            "risk"
+          ]
+        },
+        "owner_role": {
+          "$ref": "#/$defs/short_text"
+        },
+        "validation_method": {
+          "$ref": "#/$defs/long_text"
+        },
+        "due_point": {
+          "$ref": "#/$defs/short_text"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "pending_verification",
+            "validated",
+            "invalidated",
+            "deferred"
+          ]
+        },
+        "consequence_if_false": {
+          "$ref": "#/$defs/long_text"
+        },
+        "authority_or_source_needed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "assumption_log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "audit_sequence",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "audit_sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 250,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assumption_log_item"
+          }
+        }
+      }
+    },
+    "constraints_uncertainties": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "items"
+      ],
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/artifact_metadata"
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item_id",
+              "classification",
+              "statement",
+              "priority",
+              "consequence",
+              "verification_needed"
+            ],
+            "properties": {
+              "item_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "classification": {
+                "type": "string",
+                "enum": [
+                  "constraint",
+                  "assumption",
+                  "uncertainty",
+                  "verification_need"
+                ]
+              },
+              "statement": {
+                "$ref": "#/$defs/long_text"
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "consequence": {
+                "$ref": "#/$defs/long_text"
+              },
+              "verification_needed": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ledger_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ledger_entry_id",
+        "recorded_at",
+        "artifact_id",
+        "from_version",
+        "to_version",
+        "content_origin",
+        "ai_suggestion_id",
+        "consequence_level",
+        "disposition",
+        "change_summary",
+        "student_critique",
+        "student_justification",
+        "evidence_locator"
+      ],
+      "properties": {
+        "ledger_entry_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "artifact_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "from_version": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "to_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "content_origin": {
+          "type": "string",
+          "enum": [
+            "student_originated",
+            "ai_suggested",
+            "mixed"
+          ]
+        },
+        "ai_suggestion_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "consequence_level": {
+          "type": "string",
+          "enum": [
+            "inconsequential",
+            "consequential"
+          ]
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "accepted_verbatim",
+            "modified_or_challenged",
+            "rejected",
+            "deferred",
+            "not_applicable"
+          ]
+        },
+        "change_summary": {
+          "$ref": "#/$defs/long_text"
+        },
+        "student_critique": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "student_justification": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "evidence_locator": {
+          "$ref": "#/$defs/identifier"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "content_origin": {
+                "enum": [
+                  "ai_suggested",
+                  "mixed"
+                ]
+              }
+            },
+            "required": [
+              "content_origin"
+            ]
+          },
+          "then": {
+            "properties": {
+              "ai_suggestion_id": {
+                "$ref": "#/$defs/identifier"
+              },
+              "disposition": {
+                "enum": [
+                  "accepted_verbatim",
+                  "modified_or_challenged",
+                  "rejected",
+                  "deferred"
+                ]
+              },
+              "student_critique": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ai_suggestion_id": {
+                "type": "null"
+              },
+              "disposition": {
+                "const": "not_applicable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "consequence_level": {
+                "const": "consequential"
+              }
+            },
+            "required": [
+              "consequence_level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "student_justification": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "critique_revision_justification_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ledger_id",
+        "entries"
+      ],
+      "properties": {
+        "ledger_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ledger_entry"
+          }
+        }
+      }
+    },
+    "scope_artifact_package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "project_statement",
+        "requirements",
+        "expectations_moscow",
+        "goals_objectives_success_criteria",
+        "deliverables",
+        "scope_of_work",
+        "scope_boundaries",
+        "scope_action_plan",
+        "wbs",
+        "assumption_log",
+        "constraints_uncertainties",
+        "critique_revision_justification_ledger"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "project_statement": {
+          "$ref": "#/$defs/project_statement"
+        },
+        "requirements": {
+          "$ref": "#/$defs/requirements"
+        },
+        "expectations_moscow": {
+          "$ref": "#/$defs/expectations_moscow"
+        },
+        "goals_objectives_success_criteria": {
+          "$ref": "#/$defs/goals_objectives_success_criteria"
+        },
+        "deliverables": {
+          "$ref": "#/$defs/deliverables"
+        },
+        "scope_of_work": {
+          "$ref": "#/$defs/scope_of_work"
+        },
+        "scope_boundaries": {
+          "$ref": "#/$defs/scope_boundaries"
+        },
+        "scope_action_plan": {
+          "$ref": "#/$defs/scope_action_plan"
+        },
+        "wbs": {
+          "$ref": "#/$defs/wbs"
+        },
+        "assumption_log": {
+          "$ref": "#/$defs/assumption_log"
+        },
+        "constraints_uncertainties": {
+          "$ref": "#/$defs/constraints_uncertainties"
+        },
+        "critique_revision_justification_ledger": {
+          "$ref": "#/$defs/critique_revision_justification_ledger"
+        }
+      }
+    }
+  }
+}

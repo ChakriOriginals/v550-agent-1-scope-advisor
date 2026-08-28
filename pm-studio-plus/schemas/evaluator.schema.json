@@ -1,0 +1,427 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://v550.iu.edu/schemas/evaluator.schema.json",
+  "title": "V550 Scope Evaluator Result",
+  "description": "Private, evidence-based advisory evaluation for the eight equally weighted Scope dimensions. Gate results are exposed through $defs.",
+  "$ref": "#/$defs/evaluator_result",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "short_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "long_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "evidence_excerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "excerpt",
+        "evidence_locator",
+        "evidence_hash",
+        "privacy_classification"
+      ],
+      "properties": {
+        "excerpt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "evidence_locator": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evidence_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "privacy_classification": {
+          "const": "private_student_session_only"
+        }
+      }
+    },
+    "dimension_evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "rationale",
+        "evidence_excerpts",
+        "missing_evidence",
+        "confidence",
+        "improvement_action"
+      ],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "rationale": {
+          "$ref": "#/$defs/long_text"
+        },
+        "evidence_excerpts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/evidence_excerpt"
+          }
+        },
+        "missing_evidence": {
+          "type": "array",
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "improvement_action": {
+          "$ref": "#/$defs/short_text"
+        }
+      }
+    },
+    "dimension_results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_statement",
+        "objectives_and_success_criteria",
+        "scope_of_work",
+        "deliverables",
+        "scope_action_plan",
+        "constraints_and_uncertainties",
+        "exclusions",
+        "do_you_deliver"
+      ],
+      "properties": {
+        "project_statement": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "objectives_and_success_criteria": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "scope_of_work": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "deliverables": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "scope_action_plan": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "constraints_and_uncertainties": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "exclusions": {
+          "$ref": "#/$defs/dimension_evaluation"
+        },
+        "do_you_deliver": {
+          "$ref": "#/$defs/dimension_evaluation"
+        }
+      }
+    },
+    "evaluator_reason_code": {
+      "type": "string",
+      "enum": [
+        "required_component_absent",
+        "materially_incorrect",
+        "unsupported_claim",
+        "partial_or_vague",
+        "internal_inconsistency",
+        "heavy_ai_dependence",
+        "competent_with_weaknesses",
+        "strong_and_well_justified",
+        "precise_integrated_and_defensible",
+        "thin_critique_history",
+        "thin_iteration_history",
+        "evidence_sufficient",
+        "evidence_insufficient",
+        "grade_gaming_request_ignored"
+      ]
+    },
+    "evaluator_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "evaluation_id",
+        "student_key",
+        "session_id",
+        "attempt_number",
+        "evaluated_at",
+        "rubric_version",
+        "dimensions",
+        "average_score",
+        "lowest_dimension_score",
+        "reason_codes",
+        "thin_learning_history_anomaly",
+        "all_scores_evidence_based",
+        "advisory_only",
+        "canvas_grade_changed"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "evaluation_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "student_key": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "evaluated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rubric_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "dimensions": {
+          "$ref": "#/$defs/dimension_results"
+        },
+        "average_score": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "lowest_dimension_score": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "reason_codes": {
+          "type": "array",
+          "maxItems": 14,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/evaluator_reason_code"
+          }
+        },
+        "thin_learning_history_anomaly": {
+          "type": "boolean"
+        },
+        "all_scores_evidence_based": {
+          "const": true
+        },
+        "advisory_only": {
+          "const": true
+        },
+        "canvas_grade_changed": {
+          "const": false
+        }
+      }
+    },
+    "gate_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_artifacts_exist",
+        "hard_validations_pass",
+        "minimum_average_met",
+        "no_dimension_score_of_one",
+        "critique_prompts_answered",
+        "consequential_suggestions_dispositioned",
+        "consequential_changes_justified",
+        "learning_checks_complete",
+        "evaluator_evidence_sufficient"
+      ],
+      "properties": {
+        "required_artifacts_exist": {
+          "type": "boolean"
+        },
+        "hard_validations_pass": {
+          "type": "boolean"
+        },
+        "minimum_average_met": {
+          "type": "boolean"
+        },
+        "no_dimension_score_of_one": {
+          "type": "boolean"
+        },
+        "critique_prompts_answered": {
+          "type": "boolean"
+        },
+        "consequential_suggestions_dispositioned": {
+          "type": "boolean"
+        },
+        "consequential_changes_justified": {
+          "type": "boolean"
+        },
+        "learning_checks_complete": {
+          "type": "boolean"
+        },
+        "evaluator_evidence_sufficient": {
+          "type": "boolean"
+        }
+      }
+    },
+    "gate_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "gate_result_id",
+        "student_key",
+        "session_id",
+        "attempt_number",
+        "gate_attempt_number",
+        "evaluation_id",
+        "outcome",
+        "checks",
+        "required_changes",
+        "frozen_metrics_snapshot_hash",
+        "issued_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "maxLength": 32
+        },
+        "gate_result_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "student_key": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "gate_attempt_number": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "evaluation_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "REVISE",
+            "INCOMPLETE"
+          ]
+        },
+        "checks": {
+          "$ref": "#/$defs/gate_checks"
+        },
+        "required_changes": {
+          "type": "array",
+          "maxItems": 20,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/short_text"
+          }
+        },
+        "frozen_metrics_snapshot_hash": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "PASS"
+              }
+            },
+            "required": [
+              "outcome"
+            ]
+          },
+          "then": {
+            "properties": {
+              "checks": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "required_artifacts_exist": {
+                    "const": true
+                  },
+                  "hard_validations_pass": {
+                    "const": true
+                  },
+                  "minimum_average_met": {
+                    "const": true
+                  },
+                  "no_dimension_score_of_one": {
+                    "const": true
+                  },
+                  "critique_prompts_answered": {
+                    "const": true
+                  },
+                  "consequential_suggestions_dispositioned": {
+                    "const": true
+                  },
+                  "consequential_changes_justified": {
+                    "const": true
+                  },
+                  "learning_checks_complete": {
+                    "const": true
+                  },
+                  "evaluator_evidence_sufficient": {
+                    "const": true
+                  }
+                }
+              },
+              "required_changes": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "required_changes": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

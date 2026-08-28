@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_sources": [
+    {
+      "source": "skills/v550-scope-advisor/references/frozen-waldron-scenario.md",
+      "sha256": "a685af2c0a65497629327e847d72e855762c7f007e6f2c42818855f4ab6e0ca3",
+      "destinations": [
+        "pm-studio-plus/gpt/knowledge/generated/frozen-waldron-scenario.md",
+        "pm-studio-plus/tests/acceptance/frozen-waldron-demo/generated/frozen-waldron-scenario.md"
+      ]
+    },
+    {
+      "source": "skills/v550-scope-advisor/references/frozen-six-gates.md",
+      "sha256": "6baf35b5c1f59086a6336eced77ac3fe4e9514d8c3d5c26d4f6b1b0efb931d39",
+      "destinations": [
+        "pm-studio-plus/gpt/knowledge/generated/frozen-six-gates.md",
+        "pm-studio-plus/tests/acceptance/frozen-waldron-demo/generated/frozen-six-gates.md"
+      ]
+    },
+    {
+      "source": "skills/v550-scope-advisor/references/frozen-demo-script.md",
+      "sha256": "960afffd15b2dcb9c04eb5d18b697276906bdb108fb876da18d27975aa2f6057",
+      "destinations": [
+        "pm-studio-plus/gpt/knowledge/generated/frozen-demo-script.md",
+        "pm-studio-plus/tests/acceptance/frozen-waldron-demo/generated/frozen-demo-script.md"
+      ]
+    },
+    {
+      "source": "skills/v550-scope-advisor/references/gate-1-precedent-cards.md",
+      "sha256": "482c5fa5eea223f8e4e5517e28b0f1d88d32a3deda34fa699a5de6496d4fa4a7",
+      "destinations": [
+        "pm-studio-plus/gpt/knowledge/generated/gate-1-precedent-cards.md",
+        "pm-studio-plus/tests/acceptance/frozen-waldron-demo/generated/gate-1-precedent-cards.md"
+      ]
+    }
+  ],
+  "protected_generated_roots": [
+    "pm-studio-plus/gpt/knowledge/generated",
+    "pm-studio-plus/tests/acceptance/frozen-waldron-demo/generated"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "course": "V550",
+  "stage": "Stage 1 — Scope Advisor",
+  "student_key": "V550_2026_7K2M",
+  "project_title": "Course-approved community facilities exercise",
+  "metrics": {
+    "critique_depth": 2,
+    "accepted_verbatim_count": 2,
+    "challenged_or_modified_count": 5,
+    "rejected_count": 1,
+    "substantive_iteration_count": 3,
+    "gate_attempt_count": 8,
+    "gate_outcome": "PASS",
+    "misconception_flags": [
+      "success_criterion_not_measurable"
+    ]
+  },
+  "sanitized_summary": {
+    "working_on": "Stage 1 scope artifacts",
+    "ai_use": "Challenged several suggestions and revised a material boundary",
+    "decided_or_revised": "Clarified the approval handoff",
+    "stuck_or_next": "Apply the same evidence test in the next PM task"
+  }
+}

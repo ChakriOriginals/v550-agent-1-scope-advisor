@@ -1,0 +1,92 @@
+{
+  "report_title": "V550 AI Usage & Learning Report",
+  "course": "V550",
+  "stage": "stage_1_scope",
+  "student_key": "V550_2026_7K2M",
+  "sanitized_project_title": "Course-approved community facilities exercise",
+  "session_id": "ses_v550_example_0001",
+  "attempt_number": 1,
+  "receipt": {
+    "schema_version": "2.0.0",
+    "report_id": "rpt_v550_example_0001",
+    "session_id": "ses_v550_example_0001",
+    "attempt_number": 1,
+    "issuance_type": "original",
+    "generation_number": 1,
+    "previous_issuance_report_id": null,
+    "issued_at": "2026-08-07T18:00:00Z",
+    "frozen_metrics_snapshot_hash": "146d221a78dce3b41f2bb5930aaa3f52a526caa21c512bb4bfa191e68b22e29c",
+    "pdf_sha256": "b7a61f86ec321e17d54e5c5ee1f3e440768aa3d251d372631edda8bf9999b7a0",
+    "pdf_byte_length": 48219,
+    "verification_method": "hmac_sha256",
+    "verification_value": "vY7Q2kG1bJ9mN4pR8sT3wX6zA0cD5fH2jK7qL1uE9iM",
+    "watermark": null
+  },
+  "critique_depth": {
+    "level": 2,
+    "interpretation": "Substantive critique"
+  },
+  "ai_reliance": {
+    "accepted_verbatim_count": 2,
+    "challenged_or_modified_count": 5,
+    "rejected_count": 1,
+    "status": "calculated",
+    "index": 25
+  },
+  "substantive_iteration_count": 3,
+  "gate_attempt_count": 8,
+  "gate_outcome": "PASS",
+  "misconception_flags": [
+    "success_criterion_not_measurable"
+  ],
+  "what_the_evidence_shows": "The learner revised a material boundary after testing it against the stated acceptance evidence and recorded a defensible reason for the change.",
+  "where_ai_reliance_is_helping_or_hurting": "AI prompts helped surface missing acceptance evidence, while the disposition record shows the learner challenged more suggestions than were accepted unchanged.",
+  "next_step_behavior": "Apply the same evidence test before accepting a proposed scope change in the next project-management task.",
+  "transparency": {
+    "note": "This report uses minimized structured signals and sanitized summaries from the current Stage 1 attempt.",
+    "logged_categories": [
+      "pseudonymous_student_key",
+      "session_and_attempt_ids",
+      "structured_event_codes",
+      "artifact_and_version_ids",
+      "critique_depth",
+      "ai_disposition_counts",
+      "ai_reliance_index",
+      "substantive_iteration_count",
+      "gate_counts_and_outcome",
+      "misconception_flags",
+      "dimension_scores",
+      "sanitized_digest_and_report_metadata"
+    ],
+    "not_logged_categories": [
+      "raw_transcript",
+      "full_drafts",
+      "evaluator_evidence_quotes",
+      "names_or_contact_details",
+      "sensitive_personal_information",
+      "unrelated_chat_history",
+      "hidden_model_reasoning",
+      "secrets_or_credentials",
+      "real_canvas_grade",
+      "class_rank"
+    ]
+  },
+  "verification_instructions": "Use the instructor-authenticated verifier to compare the submitted PDF bytes with the signed private issuance record for this report ID.",
+  "layout": {
+    "page_size": "US_LETTER",
+    "page_count": 1,
+    "minimum_font_points": 9,
+    "flattened": true,
+    "read_only_presentation": true
+  },
+  "privacy_assertions": {
+    "contains_raw_transcript": false,
+    "contains_full_draft": false,
+    "contains_personal_information": false,
+    "contains_unrelated_history": false,
+    "contains_inferred_motive": false,
+    "contains_real_grade": false,
+    "contains_class_rank": false,
+    "contains_psychological_profile": false
+  }
+}

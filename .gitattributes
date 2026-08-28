@@ -1,0 +1,11 @@
+*.docx binary
+*.pdf binary
+*.pptx binary
+*.png binary
+*.zip binary
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.gs text eol=lf
